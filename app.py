@@ -303,13 +303,15 @@ st.markdown(
 
     /* Professional Emergency Hotlines Card */
     .emergency-hotline-card {
-        background: linear-gradient(135deg, #450a0a 0%, #881337 50%, #991b1b 100%);
-        border: 1.5px solid rgba(254, 205, 211, 0.35);
+        background: #ffffff !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 241, 242, 0.95) 50%, rgba(254, 226, 226, 0.95) 100%) !important;
+        border: 1.5px solid rgba(225, 29, 72, 0.28) !important;
         border-radius: 16px;
         padding: 1rem 1.1rem;
-        color: white;
+        color: #881337 !important;
+        -webkit-text-fill-color: #881337 !important;
         margin-top: 0.9rem;
-        box-shadow: 0 10px 25px -4px rgba(153, 27, 27, 0.35), 0 0 15px rgba(239, 68, 68, 0.2);
+        box-shadow: 0 8px 22px -4px rgba(225, 29, 72, 0.12), 0 0 14px rgba(244, 63, 94, 0.1) !important;
         position: relative;
         overflow: hidden;
     }
@@ -317,21 +319,23 @@ st.markdown(
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(225, 29, 72, 0.08) !important;
+        border: 1px solid rgba(225, 29, 72, 0.25) !important;
         padding: 3px 9px;
         border-radius: 20px;
         font-size: 0.72rem;
         font-weight: 800;
         letter-spacing: 0.4px;
         margin-bottom: 0.45rem;
+        color: #be123c !important;
+        -webkit-text-fill-color: #be123c !important;
     }
     .emergency-pulse {
         width: 8px;
         height: 8px;
-        background: #ef4444;
+        background: #e11d48;
         border-radius: 50%;
-        box-shadow: 0 0 10px #f87171;
+        box-shadow: 0 0 10px #f43f5e;
         animation: emergencyPulse 1.2s infinite;
     }
     @keyframes emergencyPulse {
@@ -345,24 +349,28 @@ st.markdown(
         margin-top: 0.6rem;
     }
     .hotline-btn-link {
-        background: rgba(255, 255, 255, 0.16);
-        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: #ffffff !important;
+        border: 1px solid rgba(225, 29, 72, 0.25) !important;
         border-radius: 8px;
         padding: 5px 8px;
         font-size: 0.74rem;
         font-weight: 700;
-        color: #ffffff !important;
+        color: #be123c !important;
+        -webkit-text-fill-color: #be123c !important;
         text-decoration: none;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 4px;
+        box-shadow: 0 2px 6px rgba(225, 29, 72, 0.06);
         transition: all 0.2s;
     }
     .hotline-btn-link:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: #fff1f2 !important;
+        border-color: #e11d48 !important;
+        color: #9f1239 !important;
+        -webkit-text-fill-color: #9f1239 !important;
         transform: translateY(-1px);
-        color: #ffffff !important;
     }
 
     /* =========================================================================
@@ -1231,10 +1239,10 @@ with st.sidebar:
             <div class="emergency-badge">
                 <span class="emergency-pulse"></span> 24/7 CRISIS & TRIAGE
             </div>
-            <div style="font-size: 0.88rem; font-weight: 800; margin-bottom: 0.2rem;">
+            <div style="font-size: 0.88rem; font-weight: 800; color: #9f1239; margin-bottom: 0.2rem;">
                 🚨 Emergency Medical Hotlines
             </div>
-            <div style="font-size: 0.74rem; opacity: 0.9; line-height: 1.35;">
+            <div style="font-size: 0.74rem; color: #475569; line-height: 1.35;">
                 In life-threatening situations or acute symptoms, call local emergency services immediately:
             </div>
             <div class="hotline-grid">
