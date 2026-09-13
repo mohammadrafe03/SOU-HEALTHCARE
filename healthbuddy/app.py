@@ -14,7 +14,7 @@ from google.genai import errors
 
 # Optional TTS audio generation
 try:
-    from gTTS import gTTS
+    from gtts import gTTS
     TTS_AVAILABLE = True
 except ImportError:
     TTS_AVAILABLE = False
@@ -76,6 +76,8 @@ def get_logo_base64() -> str:
                 continue
     return ""
 
+
+
 LOGO_URI = get_logo_base64()
 
 # ==============================================================================
@@ -116,894 +118,815 @@ PRIMARY_MODEL = "gemini-3.5-flash-lite"
 FALLBACK_MODELS = ["gemini-3.1-flash-lite", "gemini-3.5-flash"]
 
 # ==============================================================================
-# 4. THEME STATE & DYNAMIC DUAL-THEME STYLING (LIGHT & BLACK OBSIDIAN THEME)
+# 4. CUSTOM IMMERSIVE HEALTHCARE STYLING (CSS)
 # ==============================================================================
-if "theme" not in st.session_state:
-    st.session_state.theme = "light"
+st.markdown(
+    """
+    <style>
+    /* Google Fonts Import */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
 
-def get_theme_css(theme_mode: str) -> str:
-    is_dark = (theme_mode == "dark")
-    
-    if is_dark:
-        return """
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
+    /* Force Light Theme at root across all platforms & devices */
+    :root, html, body, [data-theme="dark"], [data-theme="light"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+        color-scheme: light !important;
+        supported-color-schemes: light !important;
+        --text-color: #0f172a !important;
+        --text-color-primary: #0f172a !important;
+        --text-color-secondary: #475569 !important;
+        --background-color: #f8fafc !important;
+        --secondary-background-color: #ffffff !important;
+        --primary-color: #0d9488 !important;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
 
-        /* Root Variables for Deep Obsidian Black Theme */
-        :root, html, body, [data-theme="dark"], [data-theme="light"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-            color-scheme: dark !important;
-            --text-color: #f8fafc !important;
-            --text-color-primary: #f8fafc !important;
-            --text-color-secondary: #94a3b8 !important;
-            --background-color: #050811 !important;
-            --secondary-background-color: #0f172a !important;
-            --primary-color: #14b8a6 !important;
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: #f8fafc !important;
-        }
+    /* Gemini-Inspired Luminous Gradient Light Background */
+    .stApp, [data-testid="stAppViewContainer"], [data-theme="dark"] .stApp {
+        background: 
+            radial-gradient(ellipse 90% 55% at 50% -15%, rgba(56, 189, 248, 0.22), transparent 70%),
+            radial-gradient(ellipse 65% 45% at 5% 25%, rgba(45, 212, 191, 0.20), transparent 60%),
+            radial-gradient(ellipse 60% 50% at 95% 20%, rgba(168, 85, 247, 0.18), transparent 60%),
+            radial-gradient(ellipse 75% 60% at 50% 100%, rgba(14, 165, 233, 0.16), transparent 65%),
+            radial-gradient(ellipse 40% 40% at 85% 75%, rgba(244, 114, 182, 0.12), transparent 55%),
+            linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%) !important;
+        background-attachment: fixed !important;
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+    }
 
-        /* Deep Obsidian & Luminous Nebula Dark Background */
-        .stApp, [data-testid="stAppViewContainer"], [data-theme="dark"] .stApp, [data-theme="light"] .stApp {
-            background: 
-                radial-gradient(ellipse 90% 55% at 50% -15%, rgba(13, 148, 136, 0.35), transparent 70%),
-                radial-gradient(ellipse 65% 45% at 5% 25%, rgba(2, 132, 199, 0.25), transparent 60%),
-                radial-gradient(ellipse 60% 50% at 95% 20%, rgba(147, 51, 234, 0.22), transparent 60%),
-                radial-gradient(ellipse 75% 60% at 50% 100%, rgba(13, 148, 136, 0.25), transparent 65%),
-                linear-gradient(180deg, #050811 0%, #080d1a 50%, #050811 100%) !important;
-            background-attachment: fixed !important;
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-        }
+    /* Header Bar transparent styling */
+    header[data-testid="stHeader"], [data-theme="dark"] header[data-testid="stHeader"] {
+        background: transparent !important;
+    }
+    header[data-testid="stHeader"] * {
+        color: #0f172a !important;
+    }
 
-        header[data-testid="stHeader"] {
-            background: transparent !important;
-        }
-        header[data-testid="stHeader"] * {
-            color: #f8fafc !important;
-        }
+    /* =========================================================================
+       SIDEBAR & LEFT PANEL CUSTOM STYLES
+       ========================================================================= */
+    section[data-testid="stSidebar"], [data-theme="dark"] section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 253, 250, 0.95) 50%, rgba(248, 250, 252, 0.98) 100%) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border-right: 1px solid rgba(13, 148, 136, 0.2) !important;
+        box-shadow: 4px 0 30px rgba(13, 148, 136, 0.06) !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div {
+        color: #1e293b !important;
+        -webkit-text-fill-color: #1e293b !important;
+    }
 
-        /* Sidebar Dark Panel */
-        section[data-testid="stSidebar"], [data-theme="dark"] section[data-testid="stSidebar"], [data-theme="light"] section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, rgba(8, 13, 26, 0.98) 0%, rgba(15, 23, 42, 0.96) 50%, rgba(5, 8, 17, 0.98) 100%) !important;
-            backdrop-filter: blur(24px) !important;
-            -webkit-backdrop-filter: blur(24px) !important;
-            border-right: 1px solid rgba(45, 212, 191, 0.25) !important;
-            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5) !important;
-        }
-        section[data-testid="stSidebar"] *,
-        section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] *,
-        section[data-testid="stSidebar"] p,
-        section[data-testid="stSidebar"] span,
-        section[data-testid="stSidebar"] div {
-            color: #e2e8f0 !important;
-            -webkit-text-fill-color: #e2e8f0 !important;
-        }
-        .sidebar-section-title {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: #2dd4bf !important;
-            -webkit-text-fill-color: #2dd4bf !important;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            margin-top: 0.8rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    .sidebar-brand-card {
+        background: linear-gradient(135deg, #042f2e 0%, #0d5c63 45%, #0f766e 80%, #0369a1 100%);
+        border-radius: 20px;
+        padding: 1.3rem 1.1rem;
+        color: white;
+        text-align: center;
+        box-shadow: 0 12px 28px -6px rgba(15, 58, 64, 0.35), 0 0 20px rgba(45, 212, 191, 0.28);
+        margin-bottom: 1rem;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
 
-        .sidebar-brand-card {
-            background: linear-gradient(135deg, #042f2e 0%, #0d5c63 45%, #0f766e 80%, #0369a1 100%);
-            border-radius: 20px;
-            padding: 1.3rem 1.1rem;
-            color: white;
-            text-align: center;
-            box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(45, 212, 191, 0.35);
-            margin-bottom: 1rem;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(45, 212, 191, 0.35);
-        }
-        .brand-avatar-img {
-            width: 68px;
-            height: 68px;
-            margin: 0 auto 0.6rem auto;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2.5px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45), 0 0 14px rgba(45, 212, 191, 0.5);
-            display: block;
-        }
-        .brand-name {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            margin: 0;
-            line-height: 1.2;
-        }
-        .brand-tag {
-            font-size: 0.76rem;
-            color: #ccfbf1 !important;
-            -webkit-text-fill-color: #ccfbf1 !important;
-            font-weight: 600;
-            margin-top: 0.25rem;
-        }
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 3px 12px;
-            border-radius: 9999px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #a5f3fc !important;
-            -webkit-text-fill-color: #a5f3fc !important;
-            margin-top: 0.6rem;
-        }
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #34d399;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #34d399;
-            display: inline-block;
-            animation: pulseDot 2s infinite;
-        }
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
-        }
+    .sidebar-brand-card::after {
+        content: "";
+        position: absolute;
+        top: -40%;
+        right: -30%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(96, 165, 250, 0.35) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
 
-        .emergency-hotline-card {
-            background: linear-gradient(135deg, #450a0a 0%, #881337 50%, #991b1b 100%);
-            border: 1.5px solid rgba(254, 205, 211, 0.35);
-            border-radius: 16px;
-            padding: 1rem 1.1rem;
-            color: white;
-            margin-top: 0.9rem;
-            box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.5), 0 0 15px rgba(239, 68, 68, 0.25);
-        }
-        .emergency-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            padding: 3px 9px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 800;
-            margin-bottom: 0.45rem;
-            color: #fee2e2 !important;
-            -webkit-text-fill-color: #fee2e2 !important;
-        }
-        .hotline-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-top: 0.6rem;
-        }
-        .hotline-btn-link {
-            background: rgba(255, 255, 255, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 8px;
-            padding: 5px 8px;
-            font-size: 0.74rem;
-            font-weight: 700;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
+    .brand-avatar-img {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 0.6rem auto;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2.5px solid rgba(255, 255, 255, 0.85);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28), 0 0 14px rgba(45, 212, 191, 0.5);
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    .brand-avatar-img:hover {
+        transform: scale(1.05) rotate(2deg);
+    }
 
-        /* Hero Banner Dark */
-        .brand-hero {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(19, 78, 74, 0.38) 50%, rgba(15, 23, 42, 0.95) 100%) !important;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1.5px solid rgba(45, 212, 191, 0.35) !important;
-            border-radius: 24px;
-            padding: 1.6rem 2rem;
-            margin-bottom: 1.4rem;
-            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), 0 0 25px rgba(13, 148, 136, 0.2) !important;
-            display: flex;
-            align-items: center;
-            gap: 1.6rem;
-        }
-        .hero-logo-img {
-            width: 82px;
-            height: 82px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #14b8a6;
-            box-shadow: 0 8px 24px rgba(20, 184, 166, 0.45);
-            flex-shrink: 0;
-            animation: heroFloat 6s ease-in-out infinite;
-        }
-        @keyframes heroFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(13, 148, 136, 0.25) !important;
-            border: 1px solid rgba(45, 212, 191, 0.45) !important;
-            color: #5eead4 !important;
-            -webkit-text-fill-color: #5eead4 !important;
-            padding: 4px 14px;
-            border-radius: 9999px;
-            font-size: 0.74rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.4rem;
-        }
-        .brand-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            margin: 0;
-            line-height: 1.15;
-        }
-        .brand-subtitle {
-            color: #cbd5e1 !important;
-            -webkit-text-fill-color: #cbd5e1 !important;
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-top: 0.35rem;
-        }
+    .brand-name {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 800;
+        letter-spacing: -0.4px;
+        color: #ffffff;
+        margin: 0;
+        line-height: 1.2;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
 
-        /* Small Step Box Dark */
-        .small-step-box {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(19, 78, 74, 0.3) 100%) !important;
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(45, 212, 191, 0.35) !important;
-            border-left: 5px solid #14b8a6 !important;
-            border-radius: 16px;
-            padding: 0.9rem 1.2rem;
-            margin-bottom: 1.2rem;
-            box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.3);
-        }
-        .small-step-box h4 {
-            margin: 0 0 0.25rem 0;
-            color: #5eead4 !important;
-            -webkit-text-fill-color: #5eead4 !important;
-            font-size: 0.92rem;
-            font-weight: 700;
-        }
-        .small-step-box p {
-            margin: 0;
-            color: #e2e8f0 !important;
-            -webkit-text-fill-color: #e2e8f0 !important;
-            font-size: 0.85rem;
-            line-height: 1.45;
-        }
+    .brand-tag {
+        font-size: 0.76rem;
+        color: #ccfbf1;
+        font-weight: 600;
+        margin-top: 0.25rem;
+        letter-spacing: 0.2px;
+    }
 
-        /* Action Cards Dark */
-        .card-container {
-            background: rgba(15, 23, 42, 0.9) !important;
-            backdrop-filter: blur(16px);
-            border: 1.5px solid rgba(45, 212, 191, 0.25) !important;
-            border-radius: 18px;
-            padding: 1.2rem 1.1rem;
-            min-height: 155px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            margin-bottom: 0.9rem;
-            box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
-            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-container:hover {
-            transform: translateY(-4px);
-            border-color: #2dd4bf !important;
-            box-shadow: 0 14px 30px -6px rgba(13, 148, 136, 0.4) !important;
-            background: rgba(30, 41, 59, 0.95) !important;
-        }
-        .card-icon {
-            font-size: 1.7rem;
-            margin-bottom: 0.4rem;
-        }
-        .card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-            margin-bottom: 0.3rem;
-        }
-        .card-desc {
-            font-size: 0.82rem;
-            color: #94a3b8 !important;
-            -webkit-text-fill-color: #94a3b8 !important;
-            line-height: 1.4;
-        }
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 3px 12px;
+        border-radius: 9999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #a5f3fc;
+        margin-top: 0.6rem;
+    }
 
-        /* =========================================================================
-           CHAT MESSAGES STYLING (ASSISTANT & USER - DARK THEME)
-           ========================================================================= */
-        .stChatMessage, 
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        background-color: #34d399;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #34d399;
+        display: inline-block;
+        animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .sidebar-section-title {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: #0f766e;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-top: 0.8rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* History Session Items in Sidebar */
+    .history-item {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(13, 148, 136, 0.16);
+        border-radius: 12px;
+        padding: 0.55rem 0.75rem;
+        margin-bottom: 0.45rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .history-item:hover {
+        background: rgba(240, 253, 250, 0.95);
+        border-color: #0d9488;
+        transform: translateX(2px);
+    }
+
+    /* Professional Emergency Hotlines Card */
+    .emergency-hotline-card {
+        background: linear-gradient(135deg, #450a0a 0%, #881337 50%, #991b1b 100%);
+        border: 1.5px solid rgba(254, 205, 211, 0.35);
+        border-radius: 16px;
+        padding: 1rem 1.1rem;
+        color: white;
+        margin-top: 0.9rem;
+        box-shadow: 0 10px 25px -4px rgba(153, 27, 27, 0.35), 0 0 15px rgba(239, 68, 68, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    .emergency-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.45rem;
+    }
+    .emergency-pulse {
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #f87171;
+        animation: emergencyPulse 1.2s infinite;
+    }
+    @keyframes emergencyPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.6; }
+    }
+    .hotline-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-top: 0.6rem;
+    }
+    .hotline-btn-link {
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 8px;
+        padding: 5px 8px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        color: #ffffff !important;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+    .hotline-btn-link:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+        color: #ffffff !important;
+    }
+
+    /* =========================================================================
+       HERO BANNER & HEADER
+       ========================================================================= */
+    .brand-hero {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.92) 50%, rgba(224, 242, 254, 0.92) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(13, 148, 136, 0.22);
+        border-radius: 24px;
+        padding: 1.6rem 2rem;
+        margin-bottom: 1.4rem;
+        box-shadow: 0 12px 35px -8px rgba(13, 148, 136, 0.12), 0 0 20px rgba(56, 189, 248, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+    }
+    .hero-logo-img {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #0d9488;
+        box-shadow: 0 8px 24px rgba(13, 148, 136, 0.35);
+        flex-shrink: 0;
+        animation: heroFloat 6s ease-in-out infinite;
+    }
+    @keyframes heroFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+    }
+    .hero-text-container {
+        flex: 1;
+    }
+    .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, rgba(13, 148, 136, 0.12) 0%, rgba(2, 132, 199, 0.12) 100%);
+        border: 1px solid rgba(13, 148, 136, 0.3);
+        color: #0f766e;
+        padding: 4px 14px;
+        border-radius: 9999px;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.4rem;
+    }
+    .brand-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #042f2e;
+        margin: 0;
+        line-height: 1.15;
+        letter-spacing: -0.5px;
+    }
+    .brand-subtitle {
+        color: #475569;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-top: 0.35rem;
+    }
+
+    /* Small Step Box */
+    .small-step-box {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.92) 100%);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(13, 148, 136, 0.2);
+        border-left: 5px solid #0d9488;
+        border-radius: 16px;
+        padding: 0.9rem 1.2rem;
+        margin-bottom: 1.2rem;
+        box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.05);
+    }
+    .small-step-box h4 {
+        margin: 0 0 0.25rem 0;
+        color: #0f766e;
+        font-size: 0.92rem;
+        font-weight: 700;
+    }
+    .small-step-box p {
+        margin: 0;
+        color: #334155;
+        font-size: 0.85rem;
+        line-height: 1.45;
+    }
+
+    /* Action Cards */
+    .card-container {
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(13, 148, 136, 0.16);
+        border-radius: 18px;
+        padding: 1.2rem 1.1rem;
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        min-height: 155px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-bottom: 0.9rem;
+        box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.05);
+    }
+    .card-container:hover {
+        transform: translateY(-4px);
+        border-color: #0d9488;
+        box-shadow: 0 14px 30px -6px rgba(13, 148, 136, 0.18);
+        background: #ffffff;
+    }
+    .card-icon {
+        font-size: 1.7rem;
+        margin-bottom: 0.4rem;
+    }
+    .card-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #042f2e;
+        margin-bottom: 0.3rem;
+    }
+    .card-desc {
+        font-size: 0.82rem;
+        color: #475569;
+        line-height: 1.4;
+    }
+
+    /* =========================================================================
+       CHAT MESSAGES STYLING & BULLETPROOF CROSS-PLATFORM DARK MODE CONTRAST
+       ========================================================================= */
+    .stChatMessage, 
+    div[data-testid="stChatMessage"],
+    div[data-testid="stChatMessageContent"] {
+        background: #ffffff !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(14px) !important;
+        -webkit-backdrop-filter: blur(14px) !important;
+        border: 1.5px solid rgba(13, 148, 136, 0.28) !important;
+        border-radius: 18px !important;
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        padding: 1.1rem 1.3rem !important;
+        margin-bottom: 0.9rem !important;
+        box-shadow: 0 6px 24px -4px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    /* Target all message elements explicitly to override Streamlit dark mode text inheritance */
+    div[data-testid="stChatMessage"] *,
+    div[data-testid="stChatMessageContent"] *,
+    div[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] *,
+    div[data-testid="stChatMessageContent"] [data-testid="stMarkdownContainer"] *,
+    div[data-testid="stChatMessage"] p,
+    div[data-testid="stChatMessage"] span,
+    div[data-testid="stChatMessage"] div,
+    div[data-testid="stChatMessage"] li,
+    div[data-testid="stChatMessage"] ul,
+    div[data-testid="stChatMessage"] ol,
+    div[data-testid="stChatMessage"] strong,
+    div[data-testid="stChatMessage"] b,
+    div[data-testid="stChatMessage"] em,
+    div[data-testid="stChatMessage"] i,
+    div[data-testid="stChatMessage"] table,
+    div[data-testid="stChatMessage"] tr,
+    div[data-testid="stChatMessage"] td,
+    div[data-testid="stChatMessage"] th {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+    }
+
+    /* Headings inside chat messages */
+    div[data-testid="stChatMessage"] h1,
+    div[data-testid="stChatMessage"] h2,
+    div[data-testid="stChatMessage"] h3,
+    div[data-testid="stChatMessage"] h4,
+    div[data-testid="stChatMessage"] h5,
+    div[data-testid="stChatMessage"] h6,
+    div[data-testid="stChatMessageContent"] h1,
+    div[data-testid="stChatMessageContent"] h2,
+    div[data-testid="stChatMessageContent"] h3,
+    div[data-testid="stChatMessageContent"] h4,
+    div[data-testid="stChatMessageContent"] h5,
+    div[data-testid="stChatMessageContent"] h6 {
+        color: #042f2e !important;
+        -webkit-text-fill-color: #042f2e !important;
+        font-weight: 800 !important;
+        font-family: 'Outfit', sans-serif !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+
+    /* Bullet points styling */
+    div[data-testid="stChatMessage"] li {
+        margin-bottom: 0.25rem !important;
+        line-height: 1.5 !important;
+    }
+    div[data-testid="stChatMessage"] li::marker {
+        color: #0d9488 !important;
+    }
+
+    /* Blockquote styling */
+    div[data-testid="stChatMessage"] blockquote {
+        border-left: 4px solid #0d9488 !important;
+        background: rgba(240, 253, 250, 0.9) !important;
+        color: #134e4a !important;
+        -webkit-text-fill-color: #134e4a !important;
+        padding: 0.6rem 1rem !important;
+        border-radius: 0 12px 12px 0 !important;
+        margin: 0.6rem 0 !important;
+    }
+    div[data-testid="stChatMessage"] blockquote * {
+        color: #134e4a !important;
+        -webkit-text-fill-color: #134e4a !important;
+    }
+
+    /* User Message distinct background styling */
+    div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-user"]),
+    div[data-testid="stChatMessage"]:has(span[data-testid="stIconMaterial"]),
+    div[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
+        background: #f0fdfa !important;
+        background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%) !important;
+        border: 1.5px solid rgba(13, 148, 136, 0.35) !important;
+    }
+
+    /* Code blocks retain dark IDE look with crisp syntax contrast */
+    div[data-testid="stChatMessage"] pre,
+    div[data-testid="stChatMessage"] pre code,
+    div[data-testid="stChatMessage"] code {
+        background-color: #0f172a !important;
+        color: #38bdf8 !important;
+        -webkit-text-fill-color: #38bdf8 !important;
+        border-radius: 8px !important;
+        padding: 0.2rem 0.45rem !important;
+        font-family: monospace !important;
+    }
+
+    /* Audio Player in Chat */
+    audio {
+        width: 100% !important;
+        border-radius: 30px !important;
+        margin-top: 0.4rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    /* Action Buttons & Exploration Chips */
+    .stButton > button,
+    button[kind="secondary"],
+    div[data-testid="stButton"] > button {
+        background: #ffffff !important;
+        color: #0f766e !important;
+        -webkit-text-fill-color: #0f766e !important;
+        border: 1.5px solid rgba(13, 148, 136, 0.3) !important;
+        border-radius: 14px !important;
+        font-weight: 700 !important;
+        font-size: 0.84rem !important;
+        box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08) !important;
+        transition: all 0.22s ease !important;
+    }
+    .stButton > button:hover,
+    button[kind="secondary"]:hover,
+    div[data-testid="stButton"] > button:hover {
+        background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%) !important;
+        border-color: #0d9488 !important;
+        color: #042f2e !important;
+        -webkit-text-fill-color: #042f2e !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 16px rgba(13, 148, 136, 0.18) !important;
+    }
+    .stButton > button[kind="primary"],
+    div[data-testid="stButton"] > button[kind="primary"] {
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        border: none !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35) !important;
+    }
+
+    /* Typing Indicator */
+    .typing-container {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 18px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(13, 148, 136, 0.3);
+        border-radius: 20px;
+        margin-bottom: 8px;
+        box-shadow: 0 4px 15px rgba(13, 148, 136, 0.1);
+    }
+    .typing-text {
+        font-size: 0.86rem;
+        font-weight: 700;
+        color: #0f766e;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .typing-dots {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+    }
+    .typing-dot {
+        width: 6px;
+        height: 6px;
+        background: linear-gradient(135deg, #0d9488, #0284c7);
+        border-radius: 50%;
+        animation: typingBounce 1.4s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes typingBounce {
+        0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+        40% { transform: scale(1.2); opacity: 1; }
+    }
+
+    /* =========================================================================
+       TASKBAR & BOTTOM CHAT INPUT CONTAINER WITH MOBILE DARK MODE FIX
+       ========================================================================= */
+    div[data-testid="stBottom"], div.stChatFloatingInputContainer {
+        background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.94) 35%, #f1f5f9 100%) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        padding-bottom: 0.8rem !important;
+        border-top: 1px solid rgba(13, 148, 136, 0.15) !important;
+    }
+
+    div[data-testid="stChatInput"],
+    div[data-testid="stChatInput"] > div {
+        background: #ffffff !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border: 1.5px solid rgba(56, 189, 248, 0.5) !important;
+        border-radius: 32px !important;
+        padding: 0.35rem 0.75rem !important;
+        box-shadow: 0 14px 42px -6px rgba(13, 148, 136, 0.18),
+                    0 0 28px rgba(56, 189, 248, 0.22),
+                    0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    div[data-testid="stChatInput"]:focus-within {
+        border-color: #0d9488 !important;
+        box-shadow: 0 18px 50px -6px rgba(13, 148, 136, 0.28),
+                    0 0 35px rgba(45, 212, 191, 0.35) !important;
+        transform: translateY(-2px);
+    }
+    div[data-testid="stChatInput"] textarea,
+    div[data-testid="stChatInput"] [data-testid="stChatInputTextArea"],
+    div[data-testid="stChatInput"] textarea:focus {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        background: #ffffff !important;
+        padding: 0.35rem 0.6rem !important;
+        line-height: 1.45 !important;
+        caret-color: #0d9488 !important;
+    }
+    div[data-testid="stChatInput"] textarea::placeholder {
+        color: #64748b !important;
+        -webkit-text-fill-color: #64748b !important;
+        opacity: 0.9 !important;
+    }
+    div[data-testid="stChatInput"] button {
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 36px !important;
+        height: 36px !important;
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+        box-shadow: 0 4px 14px rgba(13, 148, 136, 0.38) !important;
+        margin-left: 4px !important;
+    }
+    div[data-testid="stChatInput"] button svg {
+        fill: white !important;
+        color: white !important;
+    }
+
+    /* Form inputs and interactive controls text color enforcement */
+    input, textarea, select, 
+    div[data-testid="stTextInput"] input,
+    div[data-testid="stSelectbox"] *,
+    div[data-testid="stRadio"] *,
+    div[data-testid="stSlider"] *,
+    div[data-baseweb="select"] * {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+    }
+
+    /* File Badge */
+    .file-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #f0fdfa, #e0f2fe);
+        border: 1px solid rgba(13, 148, 136, 0.28);
+        border-radius: 10px;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #0369a1;
+        margin-bottom: 6px;
+    }
+
+    /* Health Awareness Score Animated Visuals */
+    .score-hero-card {
+        background: linear-gradient(135deg, #042f2e 0%, #0d5c63 50%, #0369a1 100%);
+        border-radius: 24px;
+        padding: 2rem;
+        color: white;
+        text-align: center;
+        box-shadow: 0 16px 40px -8px rgba(13, 148, 136, 0.35);
+        margin: 1.2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .score-circle-wrapper {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 1rem auto;
+        border-radius: 50%;
+        background: conic-gradient(#14b8a6 var(--score-deg, 280deg), rgba(255,255,255,0.15) 0deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 30px rgba(45, 212, 191, 0.5);
+        animation: scorePop 1s ease-out;
+    }
+    .score-circle-inner {
+        width: 114px;
+        height: 114px;
+        border-radius: 50%;
+        background: #042f2e;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .score-number {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.3rem;
+        font-weight: 800;
+        line-height: 1;
+        color: #5eead4;
+    }
+    .score-denom {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+    @keyframes scorePop {
+        0% { transform: scale(0.7); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .pillar-bar-container {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(13, 148, 136, 0.18);
+        border-radius: 14px;
+        padding: 0.8rem 1.1rem;
+        margin-bottom: 0.7rem;
+    }
+    .pillar-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 0.35rem;
+    }
+    .pillar-bar-bg {
+        width: 100%;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .pillar-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 1s ease-in-out;
+    }
+
+    /* Myth Buster Cards */
+    .myth-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(13, 148, 136, 0.2);
+        border-radius: 16px;
+        padding: 1.1rem;
+        margin-bottom: 0.8rem;
+        transition: transform 0.2s;
+    }
+    .myth-card:hover {
+        transform: translateY(-2px);
+        border-color: #0d9488;
+    }
+    .myth-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+    }
+    .myth-tag-busted { background: #fee2e2; color: #991b1b; }
+    .myth-tag-verified { background: #dcfce7; color: #166534; }
+    .myth-tag-partial { background: #fef3c7; color: #92400e; }
+
+    /* Persistent Disclaimer */
+    .disclaimer-banner {
+        background: rgba(241, 245, 249, 0.9);
+        border: 1px solid rgba(203, 213, 225, 0.8);
+        border-radius: 12px;
+        padding: 0.8rem 1.1rem;
+        font-size: 0.76rem;
+        color: #64748b;
+        line-height: 1.45;
+        text-align: center;
+        margin-top: 1.8rem;
+    }
+
+    /* Mobile theme overrides */
+    @media (prefers-color-scheme: dark) {
+        :root, html, body, .stApp {
+            color-scheme: light !important;
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+            -webkit-text-fill-color: #0f172a !important;
+        }
         div[data-testid="stChatMessage"],
-        div[data-testid="stChatMessageContent"] {
-            background: #0f172a !important;
-            background: rgba(15, 23, 42, 0.95) !important;
-            backdrop-filter: blur(14px) !important;
-            -webkit-backdrop-filter: blur(14px) !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.35) !important;
-            border-radius: 18px !important;
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-            padding: 1.1rem 1.3rem !important;
-            margin-bottom: 0.9rem !important;
-            box-shadow: 0 8px 30px -6px rgba(0, 0, 0, 0.55) !important;
-        }
-
+        div[data-testid="stChatMessageContent"],
         div[data-testid="stChatMessage"] *,
         div[data-testid="stChatMessageContent"] *,
-        div[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] *,
-        div[data-testid="stChatMessageContent"] [data-testid="stMarkdownContainer"] *,
         div[data-testid="stChatMessage"] p,
         div[data-testid="stChatMessage"] span,
         div[data-testid="stChatMessage"] div,
         div[data-testid="stChatMessage"] li,
-        div[data-testid="stChatMessage"] ul,
-        div[data-testid="stChatMessage"] ol,
-        div[data-testid="stChatMessage"] strong,
-        div[data-testid="stChatMessage"] b,
-        div[data-testid="stChatMessage"] em,
-        div[data-testid="stChatMessage"] i,
-        div[data-testid="stChatMessage"] table,
-        div[data-testid="stChatMessage"] tr,
-        div[data-testid="stChatMessage"] td,
-        div[data-testid="stChatMessage"] th {
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-        }
-
         div[data-testid="stChatMessage"] h1,
         div[data-testid="stChatMessage"] h2,
         div[data-testid="stChatMessage"] h3,
         div[data-testid="stChatMessage"] h4,
         div[data-testid="stChatMessage"] h5,
         div[data-testid="stChatMessage"] h6,
-        div[data-testid="stChatMessageContent"] h1,
-        div[data-testid="stChatMessageContent"] h2,
-        div[data-testid="stChatMessageContent"] h3,
-        div[data-testid="stChatMessageContent"] h4 {
-            color: #5eead4 !important;
-            -webkit-text-fill-color: #5eead4 !important;
-            font-weight: 800 !important;
-            font-family: 'Outfit', sans-serif !important;
-            margin-top: 0.5rem !important;
-            margin-bottom: 0.35rem !important;
-        }
-
-        div[data-testid="stChatMessage"] li::marker {
-            color: #2dd4bf !important;
-        }
-
-        div[data-testid="stChatMessage"] blockquote {
-            border-left: 4px solid #14b8a6 !important;
-            background: rgba(19, 78, 74, 0.35) !important;
-            color: #ccfbf1 !important;
-            -webkit-text-fill-color: #ccfbf1 !important;
-            padding: 0.6rem 1rem !important;
-            border-radius: 0 12px 12px 0 !important;
-        }
-
-        /* User message distinct styling */
-        div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-user"]),
-        div[data-testid="stChatMessage"]:has(span[data-testid="stIconMaterial"]),
-        div[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
-            background: linear-gradient(135deg, #042f2e 0%, #0d5c63 100%) !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.45) !important;
-        }
-
-        /* Buttons & Explore Chips Dark */
-        .stButton > button,
-        button[kind="secondary"],
-        div[data-testid="stButton"] > button {
-            background: #131c31 !important;
-            color: #5eead4 !important;
-            -webkit-text-fill-color: #5eead4 !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.35) !important;
-            border-radius: 14px !important;
-            font-weight: 700 !important;
-            font-size: 0.84rem !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-            transition: all 0.22s ease !important;
-        }
-        .stButton > button:hover,
-        button[kind="secondary"]:hover,
-        div[data-testid="stButton"] > button:hover {
-            background: linear-gradient(135deg, #042f2e 0%, #0f766e 100%) !important;
-            border-color: #2dd4bf !important;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 6px 18px rgba(20, 184, 166, 0.35) !important;
-        }
-        .stButton > button[kind="primary"],
-        div[data-testid="stButton"] > button[kind="primary"] {
-            background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            border: none !important;
-            font-weight: 700 !important;
-            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.45) !important;
-        }
-
-        /* Bottom Taskbar Container Dark */
-        div[data-testid="stBottom"], div.stChatFloatingInputContainer {
-            background: linear-gradient(180deg, rgba(5, 8, 17, 0) 0%, rgba(5, 8, 17, 0.96) 35%, #050811 100%) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
-            padding-bottom: 0.8rem !important;
-            border-top: 1px solid rgba(45, 212, 191, 0.2) !important;
-        }
-        div[data-testid="stChatInput"],
-        div[data-testid="stChatInput"] > div {
-            background: #0f172a !important;
-            backdrop-filter: blur(24px) !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.45) !important;
-            border-radius: 32px !important;
-            box-shadow: 0 14px 42px -6px rgba(0, 0, 0, 0.6), 0 0 25px rgba(20, 184, 166, 0.25) !important;
-        }
-        div[data-testid="stChatInput"] textarea,
-        div[data-testid="stChatInput"] [data-testid="stChatInputTextArea"],
-        div[data-testid="stChatInput"] textarea:focus {
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-            background: #0f172a !important;
-            caret-color: #2dd4bf !important;
-        }
-        div[data-testid="stChatInput"] textarea::placeholder {
-            color: #64748b !important;
-            -webkit-text-fill-color: #64748b !important;
-            opacity: 0.9 !important;
-        }
-
-        /* Interactive controls & Radio Segmented Pills in Dark Mode */
-        input, textarea, select, 
-        div[data-testid="stTextInput"] input,
-        div[data-testid="stSelectbox"] *,
-        div[data-testid="stRadio"] *,
-        div[data-testid="stSlider"] *,
-        div[data-baseweb="select"] * {
-            color: #f8fafc !important;
-            -webkit-text-fill-color: #f8fafc !important;
-        }
-        div[data-testid="stTextInput"] input {
-            background: #0f172a !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.3) !important;
-        }
-
-        /* Radio Toggle Buttons (Pill Segmented Style Dark) */
-        div[data-testid="stRadio"] [role="radiogroup"] {
-            background: rgba(15, 23, 42, 0.88) !important;
-            border: 1px solid rgba(45, 212, 191, 0.35) !important;
-            border-radius: 9999px !important;
-            padding: 4px 8px !important;
-            display: flex !important;
-            gap: 6px !important;
-            backdrop-filter: blur(12px) !important;
-        }
-        div[data-testid="stRadio"] [role="radiogroup"] label {
-            background: transparent !important;
-            border-radius: 9999px !important;
-            padding: 4px 10px !important;
-            font-size: 0.78rem !important;
-            font-weight: 700 !important;
-            color: #cbd5e1 !important;
-            -webkit-text-fill-color: #cbd5e1 !important;
-            transition: all 0.2s ease !important;
-            cursor: pointer !important;
-        }
-        div[data-testid="stRadio"] [role="radiogroup"] label:hover {
-            color: #5eead4 !important;
-            -webkit-text-fill-color: #5eead4 !important;
-        }
-
-        .disclaimer-banner {
-            background: rgba(15, 23, 42, 0.85) !important;
-            border: 1px solid rgba(51, 65, 85, 0.8) !important;
-            color: #94a3b8 !important;
-            border-radius: 12px;
-            padding: 0.8rem 1.1rem;
-            font-size: 0.76rem;
-            line-height: 1.45;
-            text-align: center;
-            margin-top: 1.8rem;
-        }
-        .myth-card {
-            background: rgba(15, 23, 42, 0.88) !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.25) !important;
-        }
-        .pillar-bar-container {
-            background: rgba(15, 23, 42, 0.88) !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.25) !important;
-        }
-        .score-hero-card {
-            background: linear-gradient(135deg, #042f2e 0%, #0f172a 50%, #0369a1 100%) !important;
-            border: 1.5px solid rgba(45, 212, 191, 0.4) !important;
-        }
-        </style>
-        """
-    else:
-        return """
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
-
-        /* Root Variables for Luminous Light Theme */
-        :root, html, body, [data-theme="light"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-            color-scheme: light !important;
-            --text-color: #0f172a !important;
-            --text-color-primary: #0f172a !important;
-            --text-color-secondary: #475569 !important;
-            --background-color: #f8fafc !important;
-            --secondary-background-color: #ffffff !important;
-            --primary-color: #0d9488 !important;
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: #0f172a !important;
-        }
-
-        /* Luminous Gradient Light Background */
-        .stApp, [data-testid="stAppViewContainer"] {
-            background: 
-                radial-gradient(ellipse 90% 55% at 50% -15%, rgba(56, 189, 248, 0.22), transparent 70%),
-                radial-gradient(ellipse 65% 45% at 5% 25%, rgba(45, 212, 191, 0.20), transparent 60%),
-                radial-gradient(ellipse 60% 50% at 95% 20%, rgba(168, 85, 247, 0.18), transparent 60%),
-                radial-gradient(ellipse 75% 60% at 50% 100%, rgba(14, 165, 233, 0.16), transparent 65%),
-                radial-gradient(ellipse 40% 40% at 85% 75%, rgba(244, 114, 182, 0.12), transparent 55%),
-                linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%) !important;
-            background-attachment: fixed !important;
-            color: #0f172a !important;
-            -webkit-text-fill-color: #0f172a !important;
-        }
-
-        header[data-testid="stHeader"] {
-            background: transparent !important;
-        }
-        header[data-testid="stHeader"] * {
-            color: #0f172a !important;
-        }
-
-        /* Sidebar Light Panel */
-        section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 253, 250, 0.95) 50%, rgba(248, 250, 252, 0.98) 100%) !important;
-            backdrop-filter: blur(24px) !important;
-            -webkit-backdrop-filter: blur(24px) !important;
-            border-right: 1px solid rgba(13, 148, 136, 0.2) !important;
-            box-shadow: 4px 0 30px rgba(13, 148, 136, 0.06) !important;
-        }
-        section[data-testid="stSidebar"] *,
-        section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] *,
-        section[data-testid="stSidebar"] p,
-        section[data-testid="stSidebar"] span,
-        section[data-testid="stSidebar"] div {
-            color: #1e293b !important;
-            -webkit-text-fill-color: #1e293b !important;
-        }
-        .sidebar-section-title {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: #0f766e !important;
-            -webkit-text-fill-color: #0f766e !important;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            margin-top: 0.8rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .sidebar-brand-card {
-            background: linear-gradient(135deg, #042f2e 0%, #0d5c63 45%, #0f766e 80%, #0369a1 100%);
-            border-radius: 20px;
-            padding: 1.3rem 1.1rem;
-            color: white;
-            text-align: center;
-            box-shadow: 0 12px 28px -6px rgba(15, 58, 64, 0.35), 0 0 20px rgba(45, 212, 191, 0.28);
-            margin-bottom: 1rem;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        .brand-avatar-img {
-            width: 68px;
-            height: 68px;
-            margin: 0 auto 0.6rem auto;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2.5px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28), 0 0 14px rgba(45, 212, 191, 0.5);
-            display: block;
-        }
-        .brand-name {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            margin: 0;
-            line-height: 1.2;
-        }
-        .brand-tag {
-            font-size: 0.76rem;
-            color: #ccfbf1 !important;
-            -webkit-text-fill-color: #ccfbf1 !important;
-            font-weight: 600;
-            margin-top: 0.25rem;
-        }
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 3px 12px;
-            border-radius: 9999px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #a5f3fc !important;
-            -webkit-text-fill-color: #a5f3fc !important;
-            margin-top: 0.6rem;
-        }
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #34d399;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #34d399;
-            display: inline-block;
-            animation: pulseDot 2s infinite;
-        }
-
-        .emergency-hotline-card {
-            background: linear-gradient(135deg, #450a0a 0%, #881337 50%, #991b1b 100%);
-            border: 1.5px solid rgba(254, 205, 211, 0.35);
-            border-radius: 16px;
-            padding: 1rem 1.1rem;
-            color: white;
-            margin-top: 0.9rem;
-            box-shadow: 0 10px 25px -4px rgba(153, 27, 27, 0.35), 0 0 15px rgba(239, 68, 68, 0.2);
-        }
-        .emergency-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            padding: 3px 9px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 800;
-            margin-bottom: 0.45rem;
-            color: #fee2e2 !important;
-            -webkit-text-fill-color: #fee2e2 !important;
-        }
-        .hotline-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-top: 0.6rem;
-        }
-        .hotline-btn-link {
-            background: rgba(255, 255, 255, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 8px;
-            padding: 5px 8px;
-            font-size: 0.74rem;
-            font-weight: 700;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        /* Hero Banner Light */
-        .brand-hero {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.92) 50%, rgba(224, 242, 254, 0.92) 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(13, 148, 136, 0.22);
-            border-radius: 24px;
-            padding: 1.6rem 2rem;
-            margin-bottom: 1.4rem;
-            box-shadow: 0 12px 35px -8px rgba(13, 148, 136, 0.12), 0 0 20px rgba(56, 189, 248, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 1.6rem;
-        }
-        .hero-logo-img {
-            width: 82px;
-            height: 82px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #0d9488;
-            box-shadow: 0 8px 24px rgba(13, 148, 136, 0.35);
-            flex-shrink: 0;
-            animation: heroFloat 6s ease-in-out infinite;
-        }
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, rgba(13, 148, 136, 0.12) 0%, rgba(2, 132, 199, 0.12) 100%);
-            border: 1px solid rgba(13, 148, 136, 0.3);
-            color: #0f766e;
-            padding: 4px 14px;
-            border-radius: 9999px;
-            font-size: 0.74rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.4rem;
-        }
-        .brand-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #042f2e;
-            margin: 0;
-            line-height: 1.15;
-        }
-        .brand-subtitle {
-            color: #475569;
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-top: 0.35rem;
-        }
-
-        /* Small Step Box Light */
-        .small-step-box {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.92) 100%);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(13, 148, 136, 0.2);
-            border-left: 5px solid #0d9488;
-            border-radius: 16px;
-            padding: 0.9rem 1.2rem;
-            margin-bottom: 1.2rem;
-            box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.05);
-        }
-        .small-step-box h4 {
-            margin: 0 0 0.25rem 0;
-            color: #0f766e;
-            font-size: 0.92rem;
-            font-weight: 700;
-        }
-        .small-step-box p {
-            margin: 0;
-            color: #334155;
-            font-size: 0.85rem;
-            line-height: 1.45;
-        }
-
-        /* Action Cards Light */
-        .card-container {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(13, 148, 136, 0.16);
-            border-radius: 18px;
-            padding: 1.2rem 1.1rem;
-            min-height: 155px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            margin-bottom: 0.9rem;
-            box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.05);
-            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-container:hover {
-            transform: translateY(-4px);
-            border-color: #0d9488;
-            box-shadow: 0 14px 30px -6px rgba(13, 148, 136, 0.18);
-            background: #ffffff;
-        }
-        .card-icon {
-            font-size: 1.7rem;
-            margin-bottom: 0.4rem;
-        }
-        .card-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #042f2e;
-            margin-bottom: 0.3rem;
-        }
-        .card-desc {
-            font-size: 0.82rem;
-            color: #475569;
-            line-height: 1.4;
-        }
-
-        /* =========================================================================
-           CHAT MESSAGES STYLING (ASSISTANT & USER - LIGHT THEME)
-           ========================================================================= */
-        .stChatMessage, 
-        div[data-testid="stChatMessage"],
-        div[data-testid="stChatMessageContent"] {
-            background: #ffffff !important;
-            background: rgba(255, 255, 255, 0.98) !important;
-            backdrop-filter: blur(14px) !important;
-            -webkit-backdrop-filter: blur(14px) !important;
-            border: 1.5px solid rgba(13, 148, 136, 0.28) !important;
-            border-radius: 18px !important;
-            color: #0f172a !important;
-            -webkit-text-fill-color: #0f172a !important;
-            padding: 1.1rem 1.3rem !important;
-            margin-bottom: 0.9rem !important;
-            box-shadow: 0 6px 24px -4px rgba(15, 23, 42, 0.08) !important;
-        }
-
-        div[data-testid="stChatMessage"] *,
-        div[data-testid="stChatMessageContent"] *,
-        div[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] *,
-        div[data-testid="stChatMessageContent"] [data-testid="stMarkdownContainer"] *,
-        div[data-testid="stChatMessage"] p,
-        div[data-testid="stChatMessage"] span,
-        div[data-testid="stChatMessage"] div,
-        div[data-testid="stChatMessage"] li,
-        div[data-testid="stChatMessage"] ul,
-        div[data-testid="stChatMessage"] ol,
         div[data-testid="stChatMessage"] strong,
         div[data-testid="stChatMessage"] b,
         div[data-testid="stChatMessage"] em,
-        div[data-testid="stChatMessage"] i {
+        div[data-testid="stChatMessage"] blockquote,
+        div[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"],
+        div[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] * {
             color: #0f172a !important;
             -webkit-text-fill-color: #0f172a !important;
         }
-
-        div[data-testid="stChatMessage"] h1,
-        div[data-testid="stChatMessage"] h2,
-        div[data-testid="stChatMessage"] h3,
-        div[data-testid="stChatMessage"] h4,
-        div[data-testid="stChatMessageContent"] h1,
-        div[data-testid="stChatMessageContent"] h2,
-        div[data-testid="stChatMessageContent"] h3,
-        div[data-testid="stChatMessageContent"] h4 {
-            color: #042f2e !important;
-            -webkit-text-fill-color: #042f2e !important;
-            font-weight: 800 !important;
-            font-family: 'Outfit', sans-serif !important;
-            margin-top: 0.5rem !important;
-            margin-bottom: 0.35rem !important;
+        div[data-testid="stChatMessage"] {
+            background: #ffffff !important;
+            border: 1.5px solid rgba(13, 148, 136, 0.28) !important;
         }
-
-        div[data-testid="stChatMessage"] li::marker {
-            color: #0d9488 !important;
-        }
-
-        div[data-testid="stChatMessage"] blockquote {
-            border-left: 4px solid #0d9488 !important;
-            background: rgba(240, 253, 250, 0.9) !important;
-            color: #134e4a !important;
-            -webkit-text-fill-color: #134e4a !important;
-            padding: 0.6rem 1rem !important;
-            border-radius: 0 12px 12px 0 !important;
-        }
-
-        /* User message distinct styling */
         div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-user"]),
         div[data-testid="stChatMessage"]:has(span[data-testid="stIconMaterial"]),
         div[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
             background: #f0fdfa !important;
             background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%) !important;
-            border: 1.5px solid rgba(13, 148, 136, 0.35) !important;
         }
-
-        /* Buttons Light */
         .stButton > button,
         button[kind="secondary"],
         div[data-testid="stButton"] > button {
@@ -1011,125 +934,39 @@ def get_theme_css(theme_mode: str) -> str:
             color: #0f766e !important;
             -webkit-text-fill-color: #0f766e !important;
             border: 1.5px solid rgba(13, 148, 136, 0.3) !important;
-            border-radius: 14px !important;
-            font-weight: 700 !important;
-            font-size: 0.84rem !important;
-            box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08) !important;
-            transition: all 0.22s ease !important;
-        }
-        .stButton > button:hover,
-        button[kind="secondary"]:hover,
-        div[data-testid="stButton"] > button:hover {
-            background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%) !important;
-            border-color: #0d9488 !important;
-            color: #042f2e !important;
-            -webkit-text-fill-color: #042f2e !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 6px 16px rgba(13, 148, 136, 0.18) !important;
-        }
-        .stButton > button[kind="primary"],
-        div[data-testid="stButton"] > button[kind="primary"] {
-            background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            border: none !important;
-            font-weight: 700 !important;
-            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35) !important;
-        }
-
-        /* Taskbar Input Light */
-        div[data-testid="stBottom"], div.stChatFloatingInputContainer {
-            background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.94) 35%, #f1f5f9 100%) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
-            padding-bottom: 0.8rem !important;
-            border-top: 1px solid rgba(13, 148, 136, 0.15) !important;
         }
         div[data-testid="stChatInput"],
-        div[data-testid="stChatInput"] > div {
+        div[data-testid="stChatInput"] > div,
+        div[data-testid="stChatInput"] textarea {
             background: #ffffff !important;
-            backdrop-filter: blur(24px) !important;
-            border: 1.5px solid rgba(56, 189, 248, 0.5) !important;
-            border-radius: 32px !important;
-            box-shadow: 0 14px 42px -6px rgba(13, 148, 136, 0.18), 0 0 28px rgba(56, 189, 248, 0.22) !important;
-        }
-        div[data-testid="stChatInput"] textarea,
-        div[data-testid="stChatInput"] [data-testid="stChatInputTextArea"],
-        div[data-testid="stChatInput"] textarea:focus {
-            color: #0f172a !important;
-            -webkit-text-fill-color: #0f172a !important;
-            background: #ffffff !important;
-            caret-color: #0d9488 !important;
-        }
-        div[data-testid="stChatInput"] textarea::placeholder {
-            color: #64748b !important;
-            -webkit-text-fill-color: #64748b !important;
-            opacity: 0.9 !important;
-        }
-
-        input, textarea, select, 
-        div[data-testid="stTextInput"] input,
-        div[data-testid="stSelectbox"] *,
-        div[data-testid="stRadio"] *,
-        div[data-testid="stSlider"] *,
-        div[data-baseweb="select"] * {
             color: #0f172a !important;
             -webkit-text-fill-color: #0f172a !important;
         }
+    }
 
-        /* Radio Toggle Buttons (Pill Segmented Style Light) */
-        div[data-testid="stRadio"] [role="radiogroup"] {
-            background: rgba(255, 255, 255, 0.92) !important;
-            border: 1px solid rgba(13, 148, 136, 0.25) !important;
-            border-radius: 9999px !important;
-            padding: 4px 8px !important;
-            display: flex !important;
-            gap: 6px !important;
-            backdrop-filter: blur(12px) !important;
-            box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08) !important;
-        }
-        div[data-testid="stRadio"] [role="radiogroup"] label {
-            background: transparent !important;
-            border-radius: 9999px !important;
-            padding: 4px 10px !important;
-            font-size: 0.78rem !important;
-            font-weight: 700 !important;
-            color: #475569 !important;
-            -webkit-text-fill-color: #475569 !important;
-            transition: all 0.2s ease !important;
-            cursor: pointer !important;
-        }
-        div[data-testid="stRadio"] [role="radiogroup"] label:hover {
-            color: #0f766e !important;
-            -webkit-text-fill-color: #0f766e !important;
-        }
-
-        .disclaimer-banner {
-            background: rgba(241, 245, 249, 0.9);
-            border: 1px solid rgba(203, 213, 225, 0.8);
-            border-radius: 12px;
-            padding: 0.8rem 1.1rem;
-            font-size: 0.76rem;
-            color: #64748b;
-            line-height: 1.45;
-            text-align: center;
-            margin-top: 1.8rem;
-        }
-        .myth-card {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(13, 148, 136, 0.2);
-        }
-        .pillar-bar-container {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(13, 148, 136, 0.18);
-        }
-        .score-hero-card {
-            background: linear-gradient(135deg, #042f2e 0%, #0d5c63 50%, #0369a1 100%);
-        }
-        </style>
-        """
-
-st.markdown(get_theme_css(st.session_state.theme), unsafe_allow_html=True)
+    /* Explicit Streamlit dark theme attribute overrides */
+    [data-theme="dark"] .stApp,
+    [data-theme="dark"] div[data-testid="stChatMessage"],
+    [data-theme="dark"] div[data-testid="stChatMessage"] *,
+    [data-theme="dark"] div[data-testid="stChatMessageContent"] *,
+    [data-theme="dark"] [data-testid="stMarkdownContainer"] * {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+    }
+    [data-theme="dark"] div[data-testid="stChatMessage"] {
+        background: #ffffff !important;
+        border-color: rgba(13, 148, 136, 0.28) !important;
+    }
+    [data-theme="dark"] .stButton > button,
+    [data-theme="dark"] button[kind="secondary"] {
+        background: #ffffff !important;
+        color: #0f766e !important;
+        -webkit-text-fill-color: #0f766e !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ==============================================================================
 # 5. MULTI-SESSION CHAT STATE MANAGEMENT
@@ -1264,12 +1101,14 @@ def generate_speech_audio(text: str) -> Optional[bytes]:
     if not TTS_AVAILABLE:
         return None
     try:
-        clean_text = text.replace("*", "").replace("#", "").replace("`", "")[:600]
-        tts = gTTS(text=clean_text, lang='en', slow=False)
+        clean_text = text.replace("*", "").replace("#", "").replace("`", "").replace(">", "").strip()
+        if len(clean_text) > 400:
+            clean_text = clean_text[:400] + "... consult a medical professional for individual guidance."
         fp = io.BytesIO()
+        tts = gTTS(text=clean_text, lang="en", slow=False)
         tts.write_to_fp(fp)
         fp.seek(0)
-        return fp.read()
+        return fp.getvalue()
     except Exception:
         return None
 
@@ -1330,29 +1169,6 @@ with st.sidebar:
     st.session_state.response_mode = selected_mode
 
     st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
-
-    # Interface Theme Switcher
-    st.markdown(
-        """
-        <div class="sidebar-section-title">
-            <span>🎨</span> Interface Theme
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    side_theme = st.radio(
-        "Sidebar Theme",
-        options=["☀️ Light Theme", "🌙 Black Theme"],
-        index=0 if st.session_state.theme == "light" else 1,
-        horizontal=True,
-        label_visibility="collapsed",
-        key="sidebar_theme_radio",
-        help="Toggle between Clean Light and Deep Obsidian Black Theme"
-    )
-    side_theme_val = "light" if "Light" in side_theme else "dark"
-    if side_theme_val != st.session_state.theme:
-        st.session_state.theme = side_theme_val
-        st.rerun()
 
     # LATEST CONVERSATION HISTORY (ChatGPT / Claude style)
     st.markdown(
@@ -1445,50 +1261,7 @@ with st.sidebar:
     )
 
 # ==============================================================================
-# 8. TOP CORNER CONTROL BAR (THEME SWITCHER & LIVE STATUS)
-# ==============================================================================
-col_top_status, col_top_theme = st.columns([3.2, 1.8])
-
-with col_top_status:
-    if st.session_state.theme == "dark":
-        status_html = """
-        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(15,23,42,0.88); border:1px solid rgba(45,212,191,0.35); border-radius:9999px; padding:6px 14px; font-size:0.78rem; color:#5eead4; font-weight:700; backdrop-filter:blur(12px); box-shadow:0 4px 14px rgba(0,0,0,0.35); margin-top:2px;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></span>
-            <span>SOU HEALTHCARE AI LIVE</span>
-            <span style="opacity:0.4;">•</span>
-            <span style="font-weight:600; opacity:0.9;">UN SDG-3 Active</span>
-        </div>
-        """
-    else:
-        status_html = """
-        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.92); border:1px solid rgba(13,148,136,0.25); border-radius:9999px; padding:6px 14px; font-size:0.78rem; color:#0f766e; font-weight:700; backdrop-filter:blur(12px); box-shadow:0 2px 10px rgba(13,148,136,0.1); margin-top:2px;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></span>
-            <span>SOU HEALTHCARE AI LIVE</span>
-            <span style="opacity:0.4;">•</span>
-            <span style="font-weight:600; opacity:0.9;">UN SDG-3 Active</span>
-        </div>
-        """
-    st.markdown(status_html, unsafe_allow_html=True)
-
-with col_top_theme:
-    top_theme = st.radio(
-        "Top Theme Toggle",
-        options=["☀️ Light Theme", "🌙 Black Theme"],
-        index=0 if st.session_state.theme == "light" else 1,
-        horizontal=True,
-        label_visibility="collapsed",
-        key="top_corner_theme_toggle",
-        help="Switch between Light and Black Theme"
-    )
-    top_theme_val = "light" if "Light" in top_theme else "dark"
-    if top_theme_val != st.session_state.theme:
-        st.session_state.theme = top_theme_val
-        st.rerun()
-
-st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
-
-# ==============================================================================
-# 9. MAIN HERO BANNER (WITH MERGED SOU HEALTHCARE LOGO)
+# 8. MAIN HERO BANNER (WITH MERGED SOU HEALTHCARE LOGO)
 # ==============================================================================
 logo_hero_html = f'<img src="{LOGO_URI}" class="hero-logo-img" alt="SOU Healthcare">' if LOGO_URI else '<div style="font-size:3rem;">🩺</div>'
 
@@ -1511,7 +1284,7 @@ st.markdown(
 )
 
 # ==============================================================================
-# 10. INNOVATIVE FEATURE: "SMALL STEP FOR TODAY" (DAILY HABIT)
+# 9. INNOVATIVE FEATURE: "SMALL STEP FOR TODAY" (DAILY HABIT)
 # ==============================================================================
 step = SMALL_STEPS[st.session_state.daily_step_idx % len(SMALL_STEPS)]
 col_step1, col_step2 = st.columns([4, 1])
@@ -1534,169 +1307,196 @@ with col_step2:
         st.rerun()
 
 # ==============================================================================
-# 11. SECTION ROUTING: ACTIVE TAB CONTROLLER
+# 10. SECTION ROUTING: ACTIVE TAB CONTROLLER
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
 # TAB A: HEALTH AWARENESS SCORE CALCULATOR (DIAGNOSTIC QUESTIONNAIRE)
 # ------------------------------------------------------------------------------
 if st.session_state.active_tab == "📊 Health Awareness Score":
-    st.markdown("## 📊 Diagnostic Health Literacy & Lifestyle Awareness Calculator")
-    st.caption("Answer these 6 core awareness questions to evaluate your health literacy, preventive habits, and lifestyle pillars.")
+    st.markdown("## 📊 Comprehensive Health Awareness Score")
+    st.write(
+        "Evaluate your daily lifestyle habits across **6 fundamental wellness pillars** defined by WHO & global health guidelines. "
+        "Calculate your real-time Health Awareness Score and receive tailored preventive recommendations."
+    )
 
-    with st.form("health_score_form"):
-        st.markdown("### 1. Daily Movement & Physical Activity")
-        q1 = st.radio(
-            "How often do you engage in at least 30 minutes of moderate physical activity or brisk walking per week?",
-            ["Rarely or 0-1 days/week", "2-3 days/week", "4-5 days/week", "6-7 days/week (Consistent)"],
-            index=1,
-        )
+    with st.container(border=True):
+        st.markdown("### 📋 6-Pillar Lifestyle Evaluation")
+        
+        c_p1, c_p2 = st.columns(2)
+        with c_p1:
+            st.markdown("#### 1. 😴 Sleep & Circadian Health")
+            q_sleep_hrs = st.slider("Average sleep duration (hours/night):", 3.0, 12.0, 7.5, 0.5)
+            q_sleep_rest = st.radio("How rested do you feel upon waking?", ["Refreshed & Energized (100%)", "Adequately Rested (75%)", "Somewhat Groggy (50%)", "Exhausted / Restless (20%)"], index=1)
+            
+            st.markdown("#### 2. 🥗 Nutrition & Mindful Hydration")
+            q_water = st.slider("Daily water intake (glasses / 250ml each):", 1, 16, 8)
+            q_diet = st.radio("Daily diet composition:", ["Whole foods, veggies & lean protein daily", "Mostly balanced with occasional processed food", "Irregular meals / High fast-food consumption"], index=1)
 
-        st.markdown("### 2. Daily Hydration Habits")
-        q2 = st.radio(
-            "How much plain water do you typically drink each day?",
-            ["Less than 1 liter (under 4 cups)", "1 to 1.8 liters", "2 to 3 liters (Optimal)", "More than 3.5 liters"],
-            index=2,
-        )
+            st.markdown("#### 3. 🏃 Physical Movement & Exercise")
+            q_activity = st.radio(
+                "Weekly physical activity level:",
+                ["150+ mins moderate exercise (brisk walk, gym, sports)", "60-120 mins light-to-moderate movement", "Sedentary (< 30 mins active movement/week)"],
+                index=0
+            )
 
-        st.markdown("### 3. Restorative Sleep Hygiene")
-        q3 = st.radio(
-            "How many hours of restful, uninterrupted sleep do you average nightly?",
-            ["Under 5 hours", "5 to 6.5 hours", "7 to 8.5 hours (Optimal)", "More than 9.5 hours"],
-            index=2,
-        )
+        with c_p2:
+            st.markdown("#### 4. 🧼 Hygiene & Preventive Habits")
+            q_hygiene = st.radio(
+                "Preventive hygiene & dental routine:",
+                ["Regular handwashing, 2x daily brushing/flossing, routine checkups", "Moderate routine, occasional missed steps", "Infrequent preventive care"],
+                index=0
+            )
 
-        st.markdown("### 4. Nutrition & Wholesome Eating")
-        q4 = st.radio(
-            "How frequently do you consume diverse vegetables, fruits, and whole foods instead of ultra-processed snacks?",
-            ["Rarely / Mostly processed foods", "A few times weekly", "Daily (1-2 servings)", "Every meal (Abundant whole foods)"],
-            index=2,
-        )
+            st.markdown("#### 5. 🧠 Stress Management & Coping")
+            q_stress = st.select_slider("Daily perceived stress level:", options=["Low & Manageable", "Moderate / Balanced", "High / Frequent Pressure", "Overwhelming"], value="Moderate / Balanced")
+            q_mindfulness = st.checkbox("I take at least 5-10 minutes daily for intentional relaxation or breathing exercises", value=True)
 
-        st.markdown("### 5. Stress Awareness & Mental Recovery")
-        q5 = st.radio(
-            "Do you actively practice proactive stress recovery (e.g., deep breathing, walking in nature, meditation, breaks)?",
-            ["Rarely / Never", "Occasionally when overwhelmed", "Regularly a few times a week", "Daily structured mindful pauses"],
-            index=1,
-        )
+            st.markdown("#### 6. 📱 Screen & Digital Hygiene")
+            q_screen = st.radio(
+                "Evening screen habits before bed:",
+                ["Screen-free 30+ mins before sleep / Blue-light filter", "Phone use in bed until falling asleep", "Heavy late-night screen exposure"],
+                index=0
+            )
 
-        st.markdown("### 6. Preventive Health Knowledge")
-        q6 = st.radio(
-            "How confident are you in identifying common warning signs (e.g. chronic fatigue, dehydration, high blood pressure risks)?",
-            ["Low confidence / Unsure", "Basic general knowledge", "Confident in preventive measures", "Highly literate and proactive"],
-            index=2,
-        )
+        calculate_btn = st.button("🎯 Calculate My Health Awareness Score", type="primary", use_container_width=True)
 
-        submitted = st.form_submit_button("📈 Calculate My Health Awareness Score", type="primary", use_container_width=True)
+        if calculate_btn:
+            s_pts = 18 if (7.0 <= q_sleep_hrs <= 9.0) else (14 if (6.0 <= q_sleep_hrs < 7.0 or 9.0 < q_sleep_hrs <= 10.0) else 8)
+            if "Refreshed" in q_sleep_rest: s_pts += 2
+            elif "Exhausted" in q_sleep_rest: s_pts -= 4
 
-    if submitted:
-        # Score calculation formula (out of 100)
-        score_weights = {
-            q1: [5, 12, 18, 20][["Rarely or 0-1 days/week", "2-3 days/week", "4-5 days/week", "6-7 days/week (Consistent)"].index(q1)],
-            q2: [5, 12, 18, 15][["Less than 1 liter (under 4 cups)", "1 to 1.8 liters", "2 to 3 liters (Optimal)", "More than 3.5 liters"].index(q2)],
-            q3: [4, 10, 18, 12][["Under 5 hours", "5 to 6.5 hours", "7 to 8.5 hours (Optimal)", "More than 9.5 hours"].index(q3)],
-            q4: [5, 10, 16, 20][["Rarely / Mostly processed foods", "A few times weekly", "Daily (1-2 servings)", "Every meal (Abundant whole foods)"].index(q4)],
-            q5: [4, 8, 14, 18][["Rarely / Never", "Occasionally when overwhelmed", "Regularly a few times a week", "Daily structured mindful pauses"].index(q5)],
-            q6: [3, 7, 12, 16][["Low confidence / Unsure", "Basic general knowledge", "Confident in preventive measures", "Highly literate and proactive"].index(q6)],
-        }
-        total_score = sum(score_weights.values())
-        st.session_state.health_score_data = {
-            "score": total_score,
-            "q1": q1, "q2": q2, "q3": q3, "q4": q4, "q5": q5, "q6": q6
-        }
+            w_pts = 10 if q_water >= 8 else (7 if q_water >= 5 else 4)
+            d_pts = 8 if "Whole foods" in q_diet else (5 if "Mostly balanced" in q_diet else 2)
+            nutr_pts = w_pts + d_pts
 
+            act_pts = 18 if "150+" in q_activity else (12 if "60-120" in q_activity else 5)
+            hyg_pts = 16 if "Regular" in q_hygiene else (11 if "Moderate" in q_hygiene else 5)
+
+            str_map = {"Low & Manageable": 12, "Moderate / Balanced": 10, "High / Frequent Pressure": 6, "Overwhelming": 2}
+            stress_pts = str_map.get(q_stress, 8) + (4 if q_mindfulness else 0)
+
+            scr_pts = 14 if "Screen-free" in q_screen else (8 if "Phone use" in q_screen else 4)
+
+            total_score = max(10, min(100, s_pts + nutr_pts + act_pts + hyg_pts + stress_pts + scr_pts))
+            
+            st.session_state.health_score_data = {
+                "total": total_score,
+                "sleep": int((s_pts / 18) * 100),
+                "nutrition": int((nutr_pts / 18) * 100),
+                "activity": int((act_pts / 18) * 100),
+                "hygiene": int((hyg_pts / 16) * 100),
+                "stress": int((stress_pts / 16) * 100),
+                "screen": int((scr_pts / 14) * 100),
+            }
+
+    # Render Animated Score Display if available
     if st.session_state.health_score_data:
-        res = st.session_state.health_score_data
-        score_val = res["score"]
-        deg = int((score_val / 100) * 360)
+        score = st.session_state.health_score_data["total"]
+        deg = int((score / 100) * 360)
+
+        tier_title = "🌟 Optimal Wellness Master" if score >= 85 else ("💪 Strong Awareness & Consistency" if score >= 70 else ("🌱 Growth Zone (Building Habits)" if score >= 50 else "⚠️ Needs Attention & Focus"))
+        tier_desc = (
+            "Outstanding! Your habits demonstrate excellent health awareness and consistent preventive lifestyle choices."
+            if score >= 85 else
+            "Great job! You have strong foundational awareness with a few targeted areas for refinement."
+            if score >= 70 else
+            "You are in the habit-building phase. Implementing small micro-adjustments will yield major health gains."
+        )
 
         st.markdown(
             f"""
             <div class="score-hero-card">
                 <div class="score-circle-wrapper" style="--score-deg: {deg}deg;">
                     <div class="score-circle-inner">
-                        <div class="score-number">{score_val}</div>
+                        <div class="score-number">{score}</div>
                         <div class="score-denom">OUT OF 100</div>
                     </div>
                 </div>
-                <h2 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.6rem; color: #ffffff;">
-                    {"🌟 Excellent Health Literacy!" if score_val >= 80 else "🌱 Strong Foundation with Growth Potential" if score_val >= 60 else "🧭 Opportunity for Preventive Transformation"}
-                </h2>
-                <p style="margin: 0.5rem auto 0 auto; max-width: 600px; font-size: 0.88rem; color: #e0f2fe; line-height: 1.45;">
-                    Your score measures your daily preventive health habits, body awareness, and wellness literacy across physical, nutritional, and mental pillars.
+                <h3 style="margin: 0; color: #ccfbf1; font-size: 1.4rem;">{tier_title}</h3>
+                <p style="margin: 0.4rem auto 0 auto; max-width: 550px; font-size: 0.88rem; color: #e0f2fe; line-height: 1.45;">
+                    {tier_desc}
                 </p>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # Breakdown Bars
-        c_bar1, c_bar2 = st.columns(2)
-        with c_bar1:
-            st.markdown(
-                """
-                <div class="pillar-bar-container">
-                    <div class="pillar-header"><span>🏃 Physical Activity & Hydration</span><span>Optimal Range</span></div>
-                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 85%; background: #14b8a6;"></div></div>
-                </div>
-                <div class="pillar-bar-container">
-                    <div class="pillar-header"><span>😴 Sleep Hygiene & Recovery</span><span>Moderate Range</span></div>
-                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 70%; background: #0284c7;"></div></div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        with c_bar2:
-            st.markdown(
-                """
-                <div class="pillar-bar-container">
-                    <div class="pillar-header"><span>🥗 Wholesome Nutrition</span><span>Strong Habit</span></div>
-                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 80%; background: #10b981;"></div></div>
-                </div>
-                <div class="pillar-bar-container">
-                    <div class="pillar-header"><span>🧠 Mental Stress Resilience</span><span>Developing</span></div>
-                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 65%; background: #f59e0b;"></div></div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        # 6 Pillars Breakdown
+        st.markdown("### 📊 6 Pillars Breakdown")
+        col_b1, col_b2 = st.columns(2)
+        
+        pillars = [
+            ("😴 Sleep & Circadian Health", st.session_state.health_score_data["sleep"], "#0284c7"),
+            ("🥗 Nutrition & Hydration", st.session_state.health_score_data["nutrition"], "#0d9488"),
+            ("🏃 Physical Movement", st.session_state.health_score_data["activity"], "#10b981"),
+            ("🧼 Hygiene & Prevention", st.session_state.health_score_data["hygiene"], "#6366f1"),
+            ("🧠 Stress & Mental Well-being", st.session_state.health_score_data["stress"], "#8b5cf6"),
+            ("📱 Screen & Digital Hygiene", st.session_state.health_score_data["screen"], "#ec4899"),
+        ]
 
-        # AI Follow-up Consultation Prompt Button
-        if st.button("💬 Discuss My Custom Lifestyle Plan with AI Assistant →", type="primary", use_container_width=True):
-            score_prompt = (
-                f"I just completed the SOU HEALTHCARE Health Literacy & Awareness Diagnostic.\n"
-                f"- Overall Score: {score_val}/100\n"
-                f"- Movement: {res['q1']}\n"
-                f"- Hydration: {res['q2']}\n"
-                f"- Sleep: {res['q3']}\n"
-                f"- Nutrition: {res['q4']}\n"
-                f"- Stress Management: {res['q5']}\n"
-                f"- Health Literacy: {res['q6']}\n\n"
-                f"Please provide an encouraging, personalized 3-step preventive lifestyle roadmap to help me improve my habits."
+        for idx, (p_name, p_val, p_color) in enumerate(pillars):
+            target_col = col_b1 if idx % 2 == 0 else col_b2
+            with target_col:
+                st.markdown(
+                    f"""
+                    <div class="pillar-bar-container">
+                        <div class="pillar-header">
+                            <span>{p_name}</span>
+                            <span style="color: {p_color};">{p_val}%</span>
+                        </div>
+                        <div class="pillar-bar-bg">
+                            <div class="pillar-bar-fill" style="width: {p_val}%; background: {p_color};"></div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+        if st.button("✨ Ask Gemini for My Personalized Action Plan →", type="primary", use_container_width=True):
+            st.session_state.pending_prompt = (
+                f"I just scored {score}/100 on my SOU HEALTHCARE Awareness Assessment. "
+                f"Here is my pillar breakdown:\n"
+                f"- Sleep: {st.session_state.health_score_data['sleep']}%\n"
+                f"- Nutrition & Hydration: {st.session_state.health_score_data['nutrition']}%\n"
+                f"- Physical Activity: {st.session_state.health_score_data['activity']}%\n"
+                f"- Hygiene & Prevention: {st.session_state.health_score_data['hygiene']}%\n"
+                f"- Stress Management: {st.session_state.health_score_data['stress']}%\n"
+                f"- Screen Habits: {st.session_state.health_score_data['screen']}%\n\n"
+                f"Please provide 3 high-impact, easy-to-implement micro-habits tailored to my lowest scoring pillars to help me improve my overall health awareness and daily wellness."
             )
-            st.session_state.pending_prompt = score_prompt
             st.session_state.active_tab = "💬 Chat Assistant"
             st.rerun()
 
 # ------------------------------------------------------------------------------
-# TAB B: MYTH BUSTER AI (FACT-CHECKING POPULAR HEALTH CLAIMS)
+# TAB B: MYTH BUSTER AI 🧙‍♂️
 # ------------------------------------------------------------------------------
 elif st.session_state.active_tab == "🧙‍♂️ Myth Buster AI":
-    st.markdown("## 🧙‍♂️ SOU Healthcare Myth Buster AI")
-    st.caption("Common viral health myths can lead to harmful choices. Select a claim below or type any belief to fact-check with peer-reviewed science.")
+    st.markdown("## 🧙‍♂️ Myth Buster AI: Science vs. Fiction")
+    st.write(
+        "Misinformation can harm health. SOU HEALTHCARE's Myth Buster AI verifies common wellness claims using **peer-reviewed clinical consensus and global health standards**."
+    )
 
+    st.markdown("### 🔍 Click to Debunk Popular Health Myths")
+    
     popular_myths = [
         {
-            "myth": "Drinking cold water immediately after a meal solidifies dietary fats and causes cancer.",
-            "verdict": "FALSE / BUSTED",
+            "myth": "Drinking ice-cold water freezes digestive fats and slows metabolism.",
+            "verdict": "BUSTED",
             "tag_class": "myth-tag-busted",
-            "prompt": "Scientifically fact-check the myth: Does drinking cold water after eating solidify food oils and cause digestive harm or cancer?",
+            "prompt": "Debunk the myth: Does drinking ice-cold water freeze fats in your stomach and slow metabolism?",
         },
         {
-            "myth": "Detox teas and cleanses are scientifically necessary to remove toxic waste from the human body.",
-            "verdict": "SCIENTIFIC MYTH",
+            "myth": "Detox teas and 3-day juice cleanses purge built-up toxins from your liver.",
+            "verdict": "BUSTED",
             "tag_class": "myth-tag-busted",
-            "prompt": "Debunk the concept of commercial detox cleanses and teas. How do the liver and kidneys naturally handle waste?",
+            "prompt": "Debunk the myth: Do commercial detox teas and juice cleanses actually detoxify liver or kidneys?",
+        },
+        {
+            "myth": "Cracking your knuckle joints causes long-term arthritis.",
+            "verdict": "BUSTED",
+            "tag_class": "myth-tag-busted",
+            "prompt": "Debunk the myth: Does cracking your knuckles lead to arthritis or joint damage?",
         },
         {
             "myth": "Antibiotics are required to treat severe common colds and flu.",
@@ -1724,9 +1524,9 @@ elif st.session_state.active_tab == "🧙‍♂️ Myth Buster AI":
         with target_col:
             st.markdown(
                 f"""
-                <div class="myth-card" style="padding: 1rem; border-radius: 14px; margin-bottom: 0.8rem;">
-                    <span style="display: inline-block; font-size: 0.72rem; font-weight: 800; padding: 2px 10px; border-radius: 9999px; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); margin-bottom: 0.4rem;">{item['verdict']}</span>
-                    <div style="font-weight: 700; font-size: 0.92rem; margin-bottom: 0.35rem;">
+                <div class="myth-card">
+                    <span class="myth-tag {item['tag_class']}">{item['verdict']}</span>
+                    <div style="font-weight: 700; font-size: 0.92rem; color: #0f172a; margin-bottom: 0.35rem;">
                         "{item['myth']}"
                     </div>
                 </div>
@@ -1872,7 +1672,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
             with st.chat_message("user"):
                 if msg.get("files"):
                     for fname in msg["files"]:
-                        st.markdown(f'<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(13,148,136,0.15); border:1px solid rgba(13,148,136,0.3); border-radius:8px; padding:3px 10px; font-size:0.78rem; font-weight:600; margin-bottom:6px;">📎 {fname}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="file-badge">📎 {fname}</div>', unsafe_allow_html=True)
                 st.markdown(msg["content"])
         else:
             with st.chat_message("assistant", avatar="🩺"):
@@ -1887,7 +1687,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
                                 st.audio(audio_bytes, format="audio/mp3", autoplay=True)
 
     # ==============================================================================
-    # 12. RESPONSE GENERATION ENGINE (GEMINI STREAMING + TYPING INDICATOR)
+    # 11. RESPONSE GENERATION ENGINE (GEMINI STREAMING + TYPING INDICATOR)
     # ==============================================================================
     def generate_ai_response(prompt_text: str, attached_files=None):
         """Sends prompt and attachments to Gemini API with real-time streaming and typing animation."""
@@ -1909,7 +1709,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
         with st.chat_message("user"):
             if file_names:
                 for fname in file_names:
-                    st.markdown(f'<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(13,148,136,0.15); border:1px solid rgba(13,148,136,0.3); border-radius:8px; padding:3px 10px; font-size:0.78rem; font-weight:600; margin-bottom:6px;">📎 Attached: {fname}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="file-badge">📎 Attached: {fname}</div>', unsafe_allow_html=True)
             st.markdown(prompt_text)
 
         # Build Gemini message contents
@@ -1941,8 +1741,15 @@ if st.session_state.active_tab == "💬 Chat Assistant":
             typing_placeholder = st.empty()
             typing_placeholder.markdown(
                 """
-                <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; background:rgba(13,148,136,0.15); border:1px solid rgba(13,148,136,0.3); border-radius:20px; font-size:0.84rem; font-weight:700;">
-                    <span>🩺 SOU HEALTHCARE is typing...</span>
+                <div class="typing-container">
+                    <div class="typing-text">
+                        <span>🩺 SOU HEALTHCARE is typing</span>
+                        <div class="typing-dots">
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                        </div>
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -2019,7 +1826,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
             # Interactive follow-up suggestion chips
             st.markdown(
                 """
-                <div style="font-size:0.8rem; font-weight:700; color:#14b8a6; margin:0.8rem 0 0.4rem 0;">
+                <div style="font-size:0.8rem; font-weight:700; color:#0f766e; margin:0.8rem 0 0.4rem 0;">
                     ✨ What would you like to explore next?
                 </div>
                 """,
@@ -2047,7 +1854,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
         generate_ai_response(prompt_to_run)
 
     # ==============================================================================
-    # 13. TASKBAR CHAT INPUT WITH SIDE-POSITIONED MIC BUTTON & AUDIO DOCK
+    # 12. TASKBAR CHAT INPUT WITH SIDE-POSITIONED MIC BUTTON & AUDIO DOCK
     # ==============================================================================
     
     # Clean Compact Voice Dock on the side (expandable / auto-detecting)
@@ -2069,37 +1876,46 @@ if st.session_state.active_tab == "💬 Chat Assistant":
         file_type=["png", "jpg", "jpeg", "webp", "pdf", "txt", "csv"]
     )
 
-    # In-Bar Browser Web Speech Recognition JavaScript Injector (Dynamically synced with current active theme)
-    theme_js_val = st.session_state.theme
+    # In-Bar Browser Web Speech Recognition JavaScript Injector (Positioned cleanly on the right side next to Send)
     components.html(
-        f"""
+        """
         <script>
-        (function() {{
+        (function() {
             const doc = window.parent.document;
-            const currentTheme = "{theme_js_val}";
             
-            function syncThemeAttributes() {{
-                try {{
-                    if (doc.documentElement) {{
-                        doc.documentElement.setAttribute('data-theme', currentTheme);
-                        doc.documentElement.style.colorScheme = currentTheme;
-                    }}
-                    if (doc.body) {{
-                        doc.body.setAttribute('data-theme', currentTheme);
-                        doc.body.style.colorScheme = currentTheme;
-                    }}
-                }} catch (e) {{}}
-            }}
-            syncThemeAttributes();
-            setInterval(syncThemeAttributes, 500);
+            // Permanently force Light Mode across all browser engines
+            function enforceLightMode() {
+                try {
+                    if (doc.documentElement) {
+                        doc.documentElement.setAttribute('data-theme', 'light');
+                        doc.documentElement.style.colorScheme = 'light';
+                    }
+                    if (doc.body) {
+                        doc.body.setAttribute('data-theme', 'light');
+                        doc.body.style.colorScheme = 'light';
+                    }
+                    let metaScheme = doc.querySelector('meta[name="color-scheme"]');
+                    if (!metaScheme) {
+                        metaScheme = doc.createElement('meta');
+                        metaScheme.name = 'color-scheme';
+                        metaScheme.content = 'light only';
+                        if (doc.head) doc.head.appendChild(metaScheme);
+                    } else {
+                        metaScheme.content = 'light only';
+                    }
+                } catch (e) {}
+            }
+            enforceLightMode();
+            setInterval(enforceLightMode, 400);
 
-            function injectVoiceMicToTaskbar() {{
+            function injectVoiceMicToTaskbar() {
                 const chatInput = doc.querySelector('div[data-testid="stChatInput"]');
                 if (!chatInput) return;
                 
+                // Check if already injected
                 let micBtn = doc.getElementById('sou-taskbar-mic-btn');
                 
-                if (!micBtn) {{
+                if (!micBtn) {
                     micBtn = doc.createElement('button');
                     micBtn.id = 'sou-taskbar-mic-btn';
                     micBtn.type = 'button';
@@ -2130,17 +1946,19 @@ if st.session_state.active_tab == "💬 Chat Assistant":
                         z-index: 999;
                     `;
 
+                    // Position cleanly on the right side right before the Send button
                     const submitBtn = chatInput.querySelector('button');
-                    if (submitBtn && submitBtn.parentNode) {{
+                    if (submitBtn && submitBtn.parentNode) {
                         submitBtn.parentNode.insertBefore(micBtn, submitBtn);
-                    }} else {{
+                    } else {
                         const innerContainer = chatInput.querySelector('div') || chatInput;
                         innerContainer.appendChild(micBtn);
-                    }}
+                    }
 
+                    // Setup Speech Recognition
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.parent.SpeechRecognition || window.parent.webkitSpeechRecognition;
                     
-                    if (SpeechRecognition) {{
+                    if (SpeechRecognition) {
                         const recognition = new SpeechRecognition();
                         recognition.continuous = false;
                         recognition.interimResults = true;
@@ -2148,41 +1966,41 @@ if st.session_state.active_tab == "💬 Chat Assistant":
 
                         let isListening = false;
 
-                        micBtn.onclick = function(e) {{
+                        micBtn.onclick = function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            if (!isListening) {{
-                                try {{
+                            if (!isListening) {
+                                try {
                                     recognition.start();
-                                }} catch(err) {{
+                                } catch(err) {
                                     console.log(err);
-                                }}
-                            }} else {{
+                                }
+                            } else {
                                 recognition.stop();
-                            }}
-                        }};
+                            }
+                        };
 
-                        recognition.onstart = function() {{
+                        recognition.onstart = function() {
                             isListening = true;
                             micBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
                             micBtn.style.boxShadow = '0 0 16px rgba(239, 68, 68, 0.85)';
                             micBtn.style.transform = 'scale(1.1)';
                             micBtn.title = '🎙️ Listening... Speak your question now!';
-                        }};
+                        };
 
-                        recognition.onresult = function(event) {{
+                        recognition.onresult = function(event) {
                             let transcript = '';
-                            for (let i = event.resultIndex; i < event.results.length; ++i) {{
+                            for (let i = event.resultIndex; i < event.results.length; ++i) {
                                 transcript += event.results[i][0].transcript;
-                            }}
+                            }
                             const textarea = doc.querySelector('div[data-testid="stChatInput"] textarea');
-                            if (textarea) {{
+                            if (textarea) {
                                 textarea.value = transcript;
-                                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                            }}
-                        }};
+                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        };
 
-                        recognition.onend = function() {{
+                        recognition.onend = function() {
                             isListening = false;
                             micBtn.style.background = 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)';
                             micBtn.style.boxShadow = '0 4px 12px rgba(13, 148, 136, 0.35)';
@@ -2190,24 +2008,24 @@ if st.session_state.active_tab == "💬 Chat Assistant":
                             micBtn.title = '🎙️ Click to Speak (Live Voice Input)';
                             
                             const textarea = doc.querySelector('div[data-testid="stChatInput"] textarea');
-                            if (textarea && textarea.value.trim().length > 0) {{
+                            if (textarea && textarea.value.trim().length > 0) {
                                 textarea.focus();
-                            }}
-                        }};
+                            }
+                        };
 
-                        recognition.onerror = function(event) {{
+                        recognition.onerror = function(event) {
                             isListening = false;
                             micBtn.style.background = 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)';
                             micBtn.style.boxShadow = '0 4px 12px rgba(13, 148, 136, 0.35)';
                             micBtn.style.transform = 'scale(1.0)';
-                        }};
-                    }}
-                }}
-            }}
+                        };
+                    }
+                }
+            }
 
             injectVoiceMicToTaskbar();
             setInterval(injectVoiceMicToTaskbar, 500);
-        }})();
+        })();
         </script>
         """,
         height=0,
@@ -2234,7 +2052,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
 
     st.markdown(
         """
-        <div style="text-align: center; font-size: 0.74rem; color: #94a3b8; margin-top: 0.3rem;">
+        <div style="text-align: center; font-size: 0.74rem; color: #64748b; margin-top: 0.3rem;">
             ✨ <strong>SOU HEALTHCARE AI</strong> • Powered by Gemini 3.5 Flash • Health Awareness & Prevention • Voice & Multimodal 📎
         </div>
         """,
@@ -2242,7 +2060,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
     )
 
 # ==============================================================================
-# 14. SUBTLE PERSISTENT HEALTHCARE DISCLAIMER
+# 13. SUBTLE PERSISTENT HEALTHCARE DISCLAIMER
 # ==============================================================================
 st.markdown(
     """
