@@ -122,8 +122,6 @@ FALLBACK_MODELS = ["gemini-3.1-flash-lite", "gemini-3.5-flash"]
 # ==============================================================================
 st.markdown(
     """
-    <meta name="color-scheme" content="light only">
-    <meta name="supported-color-schemes" content="light">
     <style>
     /* Google Fonts Import */
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
@@ -888,9 +886,7 @@ st.markdown(
         margin-top: 1.8rem;
     }
 
-    /* =========================================================================
-       MOBILE & BROWSER DARK MODE OVERRIDE RULES
-       ========================================================================= */
+    /* Mobile theme overrides */
     @media (prefers-color-scheme: dark) {
         :root, html, body, .stApp {
             color-scheme: light !important;
