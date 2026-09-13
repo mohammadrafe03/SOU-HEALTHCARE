@@ -8,65 +8,27 @@ echo.
 
 set PATH=C:\Program Files\Git\cmd;%PATH%
 
-:: 1. Check & Set Git User Identity if not configured
-git config user.name >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [SETUP] Configuring default Git Author Identity...
-    git config --global user.name "HealthBuddy Dev"
-    git config --global user.email "developer@healthbuddy.local"
-)
-
-:: 2. Check if Remote 'origin' is configured
-git remote get-url origin >nul 2>&1
-if %errorlevel% neq 0 (
-    echo.
-    echo ========================================================
-    echo  [FIRST TIME SETUP] GitHub Repository URL Required!
-    echo ========================================================
-    echo  Please paste your GitHub repo link below
-    echo  (e.g., https://github.com/YourUsername/YourRepo.git)
-    echo.
-    set /p REPO_URL="GitHub URL: "
-    if not "!REPO_URL!"=="" (
-        git remote add origin !REPO_URL!
-        echo.
-        echo Remote origin set to: !REPO_URL!
-    ) else (
-        echo [ERROR] No URL entered. Aborting push.
-        pause
-        exit /b
-    )
-)
-
-:: 3. Stage all files
-echo.
-echo [1/3] Adding all files to Git...
+echo [1/3] Adding all updated files...
 git add .
 
-:: 4. Commit changes
 echo [2/3] Committing changes...
-set COMMIT_MSG=Update SOU Healthcare bot: %date% %time%
+for /f "tokens=1-4 delims=/ " %%a in ("%date%") do (
+    for /f "tokens=1-2 delims=: " %%e in ("%time%") do (
+        set COMMIT_MSG=Auto-update SOU Healthcare: %%a-%%b-%%c %%e:%%f
+    )
+)
 git commit -m "%COMMIT_MSG%"
 
-:: 5. Ensure branch is main
-git branch -M main
-
-:: 6. Push to GitHub
 echo [3/3] Pushing to GitHub (origin main)...
-git push -u origin main
-
-if %errorlevel% neq 0 (
-    echo.
-    echo [Retrying push to origin main]
-    git push origin master
-)
+git push origin main
 
 echo.
 echo ========================================================
 if %errorlevel% equ 0 (
     echo   [SUCCESS] Code successfully pushed to GitHub!
+    echo   Streamlit Cloud will now auto-update.
 ) else (
-    echo   [NOTICE] If push failed, check your GitHub repo permissions / login.
+    echo   [NOTICE] If push failed, please check your internet or permissions.
 )
 echo ========================================================
 echo.
