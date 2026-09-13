@@ -14,7 +14,7 @@ from google.genai import errors
 
 # Optional TTS audio generation
 try:
-    from gtts import gTTS
+    from gTTS import gTTS
     TTS_AVAILABLE = True
 except ImportError:
     TTS_AVAILABLE = False
@@ -76,8 +76,6 @@ def get_logo_base64() -> str:
                 continue
     return ""
 
-
-
 LOGO_URI = get_logo_base64()
 
 # ==============================================================================
@@ -118,7 +116,7 @@ PRIMARY_MODEL = "gemini-3.5-flash-lite"
 FALLBACK_MODELS = ["gemini-3.1-flash-lite", "gemini-3.5-flash"]
 
 # ==============================================================================
-# 4. THEME STATE & CUSTOM IMMERSIVE HEALTHCARE STYLING (CSS)
+# 4. THEME STATE & DYNAMIC DUAL-THEME STYLING (LIGHT & BLACK OBSIDIAN THEME)
 # ==============================================================================
 if "theme" not in st.session_state:
     st.session_state.theme = "light"
@@ -131,7 +129,8 @@ def get_theme_css(theme_mode: str) -> str:
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
 
-        :root, html, body, [data-theme="dark"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+        /* Root Variables for Deep Obsidian Black Theme */
+        :root, html, body, [data-theme="dark"], [data-theme="light"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
             color-scheme: dark !important;
             --text-color: #f8fafc !important;
             --text-color-primary: #f8fafc !important;
@@ -144,13 +143,13 @@ def get_theme_css(theme_mode: str) -> str:
         }
 
         /* Deep Obsidian & Luminous Nebula Dark Background */
-        .stApp, [data-testid="stAppViewContainer"], [data-theme="dark"] .stApp {
+        .stApp, [data-testid="stAppViewContainer"], [data-theme="dark"] .stApp, [data-theme="light"] .stApp {
             background: 
-                radial-gradient(ellipse 90% 55% at 50% -15%, rgba(13, 148, 136, 0.32), transparent 70%),
-                radial-gradient(ellipse 65% 45% at 5% 25%, rgba(2, 132, 199, 0.22), transparent 60%),
-                radial-gradient(ellipse 60% 50% at 95% 20%, rgba(147, 51, 234, 0.20), transparent 60%),
-                radial-gradient(ellipse 75% 60% at 50% 100%, rgba(13, 148, 136, 0.22), transparent 65%),
-                linear-gradient(180deg, #050811 0%, #090e1c 50%, #050811 100%) !important;
+                radial-gradient(ellipse 90% 55% at 50% -15%, rgba(13, 148, 136, 0.35), transparent 70%),
+                radial-gradient(ellipse 65% 45% at 5% 25%, rgba(2, 132, 199, 0.25), transparent 60%),
+                radial-gradient(ellipse 60% 50% at 95% 20%, rgba(147, 51, 234, 0.22), transparent 60%),
+                radial-gradient(ellipse 75% 60% at 50% 100%, rgba(13, 148, 136, 0.25), transparent 65%),
+                linear-gradient(180deg, #050811 0%, #080d1a 50%, #050811 100%) !important;
             background-attachment: fixed !important;
             color: #f8fafc !important;
             -webkit-text-fill-color: #f8fafc !important;
@@ -163,28 +162,13 @@ def get_theme_css(theme_mode: str) -> str:
             color: #f8fafc !important;
         }
 
-        /* Top Nav Control Bar */
-        .top-nav-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(45, 212, 191, 0.3);
-            border-radius: 9999px;
-            padding: 6px 16px;
-            font-size: 0.78rem;
-            color: #5eead4;
-            font-weight: 700;
-            backdrop-filter: blur(14px);
-        }
-
         /* Sidebar Dark Panel */
-        section[data-testid="stSidebar"], [data-theme="dark"] section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, rgba(10, 15, 29, 0.98) 0%, rgba(15, 23, 42, 0.96) 50%, rgba(7, 11, 22, 0.98) 100%) !important;
+        section[data-testid="stSidebar"], [data-theme="dark"] section[data-testid="stSidebar"], [data-theme="light"] section[data-testid="stSidebar"] {
+            background: linear-gradient(180deg, rgba(8, 13, 26, 0.98) 0%, rgba(15, 23, 42, 0.96) 50%, rgba(5, 8, 17, 0.98) 100%) !important;
             backdrop-filter: blur(24px) !important;
             -webkit-backdrop-filter: blur(24px) !important;
-            border-right: 1px solid rgba(45, 212, 191, 0.22) !important;
-            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.45) !important;
+            border-right: 1px solid rgba(45, 212, 191, 0.25) !important;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5) !important;
         }
         section[data-testid="stSidebar"] *,
         section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] *,
@@ -407,7 +391,7 @@ def get_theme_css(theme_mode: str) -> str:
 
         /* Action Cards Dark */
         .card-container {
-            background: rgba(15, 23, 42, 0.88) !important;
+            background: rgba(15, 23, 42, 0.9) !important;
             backdrop-filter: blur(16px);
             border: 1.5px solid rgba(45, 212, 191, 0.25) !important;
             border-radius: 18px;
@@ -476,7 +460,11 @@ def get_theme_css(theme_mode: str) -> str:
         div[data-testid="stChatMessage"] strong,
         div[data-testid="stChatMessage"] b,
         div[data-testid="stChatMessage"] em,
-        div[data-testid="stChatMessage"] i {
+        div[data-testid="stChatMessage"] i,
+        div[data-testid="stChatMessage"] table,
+        div[data-testid="stChatMessage"] tr,
+        div[data-testid="stChatMessage"] td,
+        div[data-testid="stChatMessage"] th {
             color: #f8fafc !important;
             -webkit-text-fill-color: #f8fafc !important;
         }
@@ -505,7 +493,7 @@ def get_theme_css(theme_mode: str) -> str:
 
         div[data-testid="stChatMessage"] blockquote {
             border-left: 4px solid #14b8a6 !important;
-            background: rgba(19, 78, 74, 0.32) !important;
+            background: rgba(19, 78, 74, 0.35) !important;
             color: #ccfbf1 !important;
             -webkit-text-fill-color: #ccfbf1 !important;
             padding: 0.6rem 1rem !important;
@@ -601,8 +589,8 @@ def get_theme_css(theme_mode: str) -> str:
 
         /* Radio Toggle Buttons (Pill Segmented Style Dark) */
         div[data-testid="stRadio"] [role="radiogroup"] {
-            background: rgba(15, 23, 42, 0.85) !important;
-            border: 1px solid rgba(45, 212, 191, 0.3) !important;
+            background: rgba(15, 23, 42, 0.88) !important;
+            border: 1px solid rgba(45, 212, 191, 0.35) !important;
             border-radius: 9999px !important;
             padding: 4px 8px !important;
             display: flex !important;
@@ -655,7 +643,8 @@ def get_theme_css(theme_mode: str) -> str:
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
 
-        :root, html, body, [data-theme="dark"], [data-theme="light"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+        /* Root Variables for Luminous Light Theme */
+        :root, html, body, [data-theme="light"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
             color-scheme: light !important;
             --text-color: #0f172a !important;
             --text-color-primary: #0f172a !important;
@@ -664,9 +653,10 @@ def get_theme_css(theme_mode: str) -> str:
             --secondary-background-color: #ffffff !important;
             --primary-color: #0d9488 !important;
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #0f172a !important;
         }
 
-        /* Luminous Light Gradient Background */
+        /* Luminous Gradient Light Background */
         .stApp, [data-testid="stAppViewContainer"] {
             background: 
                 radial-gradient(ellipse 90% 55% at 50% -15%, rgba(56, 189, 248, 0.22), transparent 70%),
@@ -685,22 +675,6 @@ def get_theme_css(theme_mode: str) -> str:
         }
         header[data-testid="stHeader"] * {
             color: #0f172a !important;
-        }
-
-        /* Top Nav Control Bar */
-        .top-nav-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(13, 148, 136, 0.25);
-            border-radius: 9999px;
-            padding: 6px 16px;
-            font-size: 0.78rem;
-            color: #0f766e;
-            font-weight: 700;
-            backdrop-filter: blur(14px);
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.08);
         }
 
         /* Sidebar Light Panel */
@@ -794,10 +768,6 @@ def get_theme_css(theme_mode: str) -> str:
             display: inline-block;
             animation: pulseDot 2s infinite;
         }
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
-        }
 
         .emergency-hotline-card {
             background: linear-gradient(135deg, #450a0a 0%, #881337 50%, #991b1b 100%);
@@ -819,8 +789,8 @@ def get_theme_css(theme_mode: str) -> str:
             font-size: 0.72rem;
             font-weight: 800;
             margin-bottom: 0.45rem;
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
+            color: #fee2e2 !important;
+            -webkit-text-fill-color: #fee2e2 !important;
         }
         .hotline-grid {
             display: grid;
@@ -846,7 +816,7 @@ def get_theme_css(theme_mode: str) -> str:
 
         /* Hero Banner Light */
         .brand-hero {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.92) 50%, rgba(224, 242, 254, 0.92) 100%) !important;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.92) 50%, rgba(224, 242, 254, 0.92) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(13, 148, 136, 0.22);
@@ -867,10 +837,6 @@ def get_theme_css(theme_mode: str) -> str:
             box-shadow: 0 8px 24px rgba(13, 148, 136, 0.35);
             flex-shrink: 0;
             animation: heroFloat 6s ease-in-out infinite;
-        }
-        @keyframes heroFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
         }
         .brand-badge {
             display: inline-flex;
@@ -893,7 +859,6 @@ def get_theme_css(theme_mode: str) -> str:
             color: #042f2e;
             margin: 0;
             line-height: 1.15;
-            letter-spacing: -0.5px;
         }
         .brand-subtitle {
             color: #475569;
@@ -963,7 +928,9 @@ def get_theme_css(theme_mode: str) -> str:
             line-height: 1.4;
         }
 
-        /* Chat Messages Light */
+        /* =========================================================================
+           CHAT MESSAGES STYLING (ASSISTANT & USER - LIGHT THEME)
+           ========================================================================= */
         .stChatMessage, 
         div[data-testid="stChatMessage"],
         div[data-testid="stChatMessageContent"] {
@@ -979,6 +946,7 @@ def get_theme_css(theme_mode: str) -> str:
             margin-bottom: 0.9rem !important;
             box-shadow: 0 6px 24px -4px rgba(15, 23, 42, 0.08) !important;
         }
+
         div[data-testid="stChatMessage"] *,
         div[data-testid="stChatMessageContent"] *,
         div[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] *,
@@ -996,12 +964,15 @@ def get_theme_css(theme_mode: str) -> str:
             color: #0f172a !important;
             -webkit-text-fill-color: #0f172a !important;
         }
+
         div[data-testid="stChatMessage"] h1,
         div[data-testid="stChatMessage"] h2,
         div[data-testid="stChatMessage"] h3,
         div[data-testid="stChatMessage"] h4,
-        div[data-testid="stChatMessage"] h5,
-        div[data-testid="stChatMessage"] h6 {
+        div[data-testid="stChatMessageContent"] h1,
+        div[data-testid="stChatMessageContent"] h2,
+        div[data-testid="stChatMessageContent"] h3,
+        div[data-testid="stChatMessageContent"] h4 {
             color: #042f2e !important;
             -webkit-text-fill-color: #042f2e !important;
             font-weight: 800 !important;
@@ -1009,9 +980,11 @@ def get_theme_css(theme_mode: str) -> str:
             margin-top: 0.5rem !important;
             margin-bottom: 0.35rem !important;
         }
+
         div[data-testid="stChatMessage"] li::marker {
             color: #0d9488 !important;
         }
+
         div[data-testid="stChatMessage"] blockquote {
             border-left: 4px solid #0d9488 !important;
             background: rgba(240, 253, 250, 0.9) !important;
@@ -1020,6 +993,8 @@ def get_theme_css(theme_mode: str) -> str:
             padding: 0.6rem 1rem !important;
             border-radius: 0 12px 12px 0 !important;
         }
+
+        /* User message distinct styling */
         div[data-testid="stChatMessage"]:has(div[data-testid="chatAvatarIcon-user"]),
         div[data-testid="stChatMessage"]:has(span[data-testid="stIconMaterial"]),
         div[data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
@@ -1289,14 +1264,12 @@ def generate_speech_audio(text: str) -> Optional[bytes]:
     if not TTS_AVAILABLE:
         return None
     try:
-        clean_text = text.replace("*", "").replace("#", "").replace("`", "").replace(">", "").strip()
-        if len(clean_text) > 400:
-            clean_text = clean_text[:400] + "... consult a medical professional for individual guidance."
+        clean_text = text.replace("*", "").replace("#", "").replace("`", "")[:600]
+        tts = gTTS(text=clean_text, lang='en', slow=False)
         fp = io.BytesIO()
-        tts = gTTS(text=clean_text, lang="en", slow=False)
         tts.write_to_fp(fp)
         fp.seek(0)
-        return fp.getvalue()
+        return fp.read()
     except Exception:
         return None
 
@@ -1358,6 +1331,29 @@ with st.sidebar:
 
     st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
 
+    # Interface Theme Switcher
+    st.markdown(
+        """
+        <div class="sidebar-section-title">
+            <span>🎨</span> Interface Theme
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    side_theme = st.radio(
+        "Sidebar Theme",
+        options=["☀️ Light Theme", "🌙 Black Theme"],
+        index=0 if st.session_state.theme == "light" else 1,
+        horizontal=True,
+        label_visibility="collapsed",
+        key="sidebar_theme_radio",
+        help="Toggle between Clean Light and Deep Obsidian Black Theme"
+    )
+    side_theme_val = "light" if "Light" in side_theme else "dark"
+    if side_theme_val != st.session_state.theme:
+        st.session_state.theme = side_theme_val
+        st.rerun()
+
     # LATEST CONVERSATION HISTORY (ChatGPT / Claude style)
     st.markdown(
         """
@@ -1410,29 +1406,6 @@ with st.sidebar:
                         st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
                     st.rerun()
 
-    # Interface Theme Switcher
-    st.markdown(
-        """
-        <div class="sidebar-section-title">
-            <span>🎨</span> Interface Theme
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    side_theme = st.radio(
-        "Sidebar Theme",
-        options=["☀️ Light Theme", "🌙 Black Theme"],
-        index=0 if st.session_state.theme == "light" else 1,
-        horizontal=True,
-        label_visibility="collapsed",
-        key="sidebar_theme_radio",
-        help="Toggle between Clean Light and Deep Obsidian Black Theme"
-    )
-    side_theme_val = "light" if "Light" in side_theme else "dark"
-    if side_theme_val != st.session_state.theme:
-        st.session_state.theme = side_theme_val
-        st.rerun()
-
     # Upgraded Professional Emergency Hotlines Card
     st.markdown(
         """
@@ -1472,7 +1445,7 @@ with st.sidebar:
     )
 
 # ==============================================================================
-# 8. TOP CORNER CONTROL BAR (THEME SWITCHER & STATUS INDICATOR)
+# 8. TOP CORNER CONTROL BAR (THEME SWITCHER & LIVE STATUS)
 # ==============================================================================
 col_top_status, col_top_theme = st.columns([3.2, 1.8])
 
@@ -1538,7 +1511,7 @@ st.markdown(
 )
 
 # ==============================================================================
-# 9. INNOVATIVE FEATURE: "SMALL STEP FOR TODAY" (DAILY HABIT)
+# 10. INNOVATIVE FEATURE: "SMALL STEP FOR TODAY" (DAILY HABIT)
 # ==============================================================================
 step = SMALL_STEPS[st.session_state.daily_step_idx % len(SMALL_STEPS)]
 col_step1, col_step2 = st.columns([4, 1])
@@ -1561,196 +1534,169 @@ with col_step2:
         st.rerun()
 
 # ==============================================================================
-# 10. SECTION ROUTING: ACTIVE TAB CONTROLLER
+# 11. SECTION ROUTING: ACTIVE TAB CONTROLLER
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
 # TAB A: HEALTH AWARENESS SCORE CALCULATOR (DIAGNOSTIC QUESTIONNAIRE)
 # ------------------------------------------------------------------------------
 if st.session_state.active_tab == "📊 Health Awareness Score":
-    st.markdown("## 📊 Comprehensive Health Awareness Score")
-    st.write(
-        "Evaluate your daily lifestyle habits across **6 fundamental wellness pillars** defined by WHO & global health guidelines. "
-        "Calculate your real-time Health Awareness Score and receive tailored preventive recommendations."
-    )
+    st.markdown("## 📊 Diagnostic Health Literacy & Lifestyle Awareness Calculator")
+    st.caption("Answer these 6 core awareness questions to evaluate your health literacy, preventive habits, and lifestyle pillars.")
 
-    with st.container(border=True):
-        st.markdown("### 📋 6-Pillar Lifestyle Evaluation")
-        
-        c_p1, c_p2 = st.columns(2)
-        with c_p1:
-            st.markdown("#### 1. 😴 Sleep & Circadian Health")
-            q_sleep_hrs = st.slider("Average sleep duration (hours/night):", 3.0, 12.0, 7.5, 0.5)
-            q_sleep_rest = st.radio("How rested do you feel upon waking?", ["Refreshed & Energized (100%)", "Adequately Rested (75%)", "Somewhat Groggy (50%)", "Exhausted / Restless (20%)"], index=1)
-            
-            st.markdown("#### 2. 🥗 Nutrition & Mindful Hydration")
-            q_water = st.slider("Daily water intake (glasses / 250ml each):", 1, 16, 8)
-            q_diet = st.radio("Daily diet composition:", ["Whole foods, veggies & lean protein daily", "Mostly balanced with occasional processed food", "Irregular meals / High fast-food consumption"], index=1)
-
-            st.markdown("#### 3. 🏃 Physical Movement & Exercise")
-            q_activity = st.radio(
-                "Weekly physical activity level:",
-                ["150+ mins moderate exercise (brisk walk, gym, sports)", "60-120 mins light-to-moderate movement", "Sedentary (< 30 mins active movement/week)"],
-                index=0
-            )
-
-        with c_p2:
-            st.markdown("#### 4. 🧼 Hygiene & Preventive Habits")
-            q_hygiene = st.radio(
-                "Preventive hygiene & dental routine:",
-                ["Regular handwashing, 2x daily brushing/flossing, routine checkups", "Moderate routine, occasional missed steps", "Infrequent preventive care"],
-                index=0
-            )
-
-            st.markdown("#### 5. 🧠 Stress Management & Coping")
-            q_stress = st.select_slider("Daily perceived stress level:", options=["Low & Manageable", "Moderate / Balanced", "High / Frequent Pressure", "Overwhelming"], value="Moderate / Balanced")
-            q_mindfulness = st.checkbox("I take at least 5-10 minutes daily for intentional relaxation or breathing exercises", value=True)
-
-            st.markdown("#### 6. 📱 Screen & Digital Hygiene")
-            q_screen = st.radio(
-                "Evening screen habits before bed:",
-                ["Screen-free 30+ mins before sleep / Blue-light filter", "Phone use in bed until falling asleep", "Heavy late-night screen exposure"],
-                index=0
-            )
-
-        calculate_btn = st.button("🎯 Calculate My Health Awareness Score", type="primary", use_container_width=True)
-
-        if calculate_btn:
-            s_pts = 18 if (7.0 <= q_sleep_hrs <= 9.0) else (14 if (6.0 <= q_sleep_hrs < 7.0 or 9.0 < q_sleep_hrs <= 10.0) else 8)
-            if "Refreshed" in q_sleep_rest: s_pts += 2
-            elif "Exhausted" in q_sleep_rest: s_pts -= 4
-
-            w_pts = 10 if q_water >= 8 else (7 if q_water >= 5 else 4)
-            d_pts = 8 if "Whole foods" in q_diet else (5 if "Mostly balanced" in q_diet else 2)
-            nutr_pts = w_pts + d_pts
-
-            act_pts = 18 if "150+" in q_activity else (12 if "60-120" in q_activity else 5)
-            hyg_pts = 16 if "Regular" in q_hygiene else (11 if "Moderate" in q_hygiene else 5)
-
-            str_map = {"Low & Manageable": 12, "Moderate / Balanced": 10, "High / Frequent Pressure": 6, "Overwhelming": 2}
-            stress_pts = str_map.get(q_stress, 8) + (4 if q_mindfulness else 0)
-
-            scr_pts = 14 if "Screen-free" in q_screen else (8 if "Phone use" in q_screen else 4)
-
-            total_score = max(10, min(100, s_pts + nutr_pts + act_pts + hyg_pts + stress_pts + scr_pts))
-            
-            st.session_state.health_score_data = {
-                "total": total_score,
-                "sleep": int((s_pts / 18) * 100),
-                "nutrition": int((nutr_pts / 18) * 100),
-                "activity": int((act_pts / 18) * 100),
-                "hygiene": int((hyg_pts / 16) * 100),
-                "stress": int((stress_pts / 16) * 100),
-                "screen": int((scr_pts / 14) * 100),
-            }
-
-    # Render Animated Score Display if available
-    if st.session_state.health_score_data:
-        score = st.session_state.health_score_data["total"]
-        deg = int((score / 100) * 360)
-
-        tier_title = "🌟 Optimal Wellness Master" if score >= 85 else ("💪 Strong Awareness & Consistency" if score >= 70 else ("🌱 Growth Zone (Building Habits)" if score >= 50 else "⚠️ Needs Attention & Focus"))
-        tier_desc = (
-            "Outstanding! Your habits demonstrate excellent health awareness and consistent preventive lifestyle choices."
-            if score >= 85 else
-            "Great job! You have strong foundational awareness with a few targeted areas for refinement."
-            if score >= 70 else
-            "You are in the habit-building phase. Implementing small micro-adjustments will yield major health gains."
+    with st.form("health_score_form"):
+        st.markdown("### 1. Daily Movement & Physical Activity")
+        q1 = st.radio(
+            "How often do you engage in at least 30 minutes of moderate physical activity or brisk walking per week?",
+            ["Rarely or 0-1 days/week", "2-3 days/week", "4-5 days/week", "6-7 days/week (Consistent)"],
+            index=1,
         )
+
+        st.markdown("### 2. Daily Hydration Habits")
+        q2 = st.radio(
+            "How much plain water do you typically drink each day?",
+            ["Less than 1 liter (under 4 cups)", "1 to 1.8 liters", "2 to 3 liters (Optimal)", "More than 3.5 liters"],
+            index=2,
+        )
+
+        st.markdown("### 3. Restorative Sleep Hygiene")
+        q3 = st.radio(
+            "How many hours of restful, uninterrupted sleep do you average nightly?",
+            ["Under 5 hours", "5 to 6.5 hours", "7 to 8.5 hours (Optimal)", "More than 9.5 hours"],
+            index=2,
+        )
+
+        st.markdown("### 4. Nutrition & Wholesome Eating")
+        q4 = st.radio(
+            "How frequently do you consume diverse vegetables, fruits, and whole foods instead of ultra-processed snacks?",
+            ["Rarely / Mostly processed foods", "A few times weekly", "Daily (1-2 servings)", "Every meal (Abundant whole foods)"],
+            index=2,
+        )
+
+        st.markdown("### 5. Stress Awareness & Mental Recovery")
+        q5 = st.radio(
+            "Do you actively practice proactive stress recovery (e.g., deep breathing, walking in nature, meditation, breaks)?",
+            ["Rarely / Never", "Occasionally when overwhelmed", "Regularly a few times a week", "Daily structured mindful pauses"],
+            index=1,
+        )
+
+        st.markdown("### 6. Preventive Health Knowledge")
+        q6 = st.radio(
+            "How confident are you in identifying common warning signs (e.g. chronic fatigue, dehydration, high blood pressure risks)?",
+            ["Low confidence / Unsure", "Basic general knowledge", "Confident in preventive measures", "Highly literate and proactive"],
+            index=2,
+        )
+
+        submitted = st.form_submit_button("📈 Calculate My Health Awareness Score", type="primary", use_container_width=True)
+
+    if submitted:
+        # Score calculation formula (out of 100)
+        score_weights = {
+            q1: [5, 12, 18, 20][["Rarely or 0-1 days/week", "2-3 days/week", "4-5 days/week", "6-7 days/week (Consistent)"].index(q1)],
+            q2: [5, 12, 18, 15][["Less than 1 liter (under 4 cups)", "1 to 1.8 liters", "2 to 3 liters (Optimal)", "More than 3.5 liters"].index(q2)],
+            q3: [4, 10, 18, 12][["Under 5 hours", "5 to 6.5 hours", "7 to 8.5 hours (Optimal)", "More than 9.5 hours"].index(q3)],
+            q4: [5, 10, 16, 20][["Rarely / Mostly processed foods", "A few times weekly", "Daily (1-2 servings)", "Every meal (Abundant whole foods)"].index(q4)],
+            q5: [4, 8, 14, 18][["Rarely / Never", "Occasionally when overwhelmed", "Regularly a few times a week", "Daily structured mindful pauses"].index(q5)],
+            q6: [3, 7, 12, 16][["Low confidence / Unsure", "Basic general knowledge", "Confident in preventive measures", "Highly literate and proactive"].index(q6)],
+        }
+        total_score = sum(score_weights.values())
+        st.session_state.health_score_data = {
+            "score": total_score,
+            "q1": q1, "q2": q2, "q3": q3, "q4": q4, "q5": q5, "q6": q6
+        }
+
+    if st.session_state.health_score_data:
+        res = st.session_state.health_score_data
+        score_val = res["score"]
+        deg = int((score_val / 100) * 360)
 
         st.markdown(
             f"""
             <div class="score-hero-card">
                 <div class="score-circle-wrapper" style="--score-deg: {deg}deg;">
                     <div class="score-circle-inner">
-                        <div class="score-number">{score}</div>
+                        <div class="score-number">{score_val}</div>
                         <div class="score-denom">OUT OF 100</div>
                     </div>
                 </div>
-                <h3 style="margin: 0; color: #ccfbf1; font-size: 1.4rem;">{tier_title}</h3>
-                <p style="margin: 0.4rem auto 0 auto; max-width: 550px; font-size: 0.88rem; color: #e0f2fe; line-height: 1.45;">
-                    {tier_desc}
+                <h2 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.6rem; color: #ffffff;">
+                    {"🌟 Excellent Health Literacy!" if score_val >= 80 else "🌱 Strong Foundation with Growth Potential" if score_val >= 60 else "🧭 Opportunity for Preventive Transformation"}
+                </h2>
+                <p style="margin: 0.5rem auto 0 auto; max-width: 600px; font-size: 0.88rem; color: #e0f2fe; line-height: 1.45;">
+                    Your score measures your daily preventive health habits, body awareness, and wellness literacy across physical, nutritional, and mental pillars.
                 </p>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # 6 Pillars Breakdown
-        st.markdown("### 📊 6 Pillars Breakdown")
-        col_b1, col_b2 = st.columns(2)
-        
-        pillars = [
-            ("😴 Sleep & Circadian Health", st.session_state.health_score_data["sleep"], "#0284c7"),
-            ("🥗 Nutrition & Hydration", st.session_state.health_score_data["nutrition"], "#0d9488"),
-            ("🏃 Physical Movement", st.session_state.health_score_data["activity"], "#10b981"),
-            ("🧼 Hygiene & Prevention", st.session_state.health_score_data["hygiene"], "#6366f1"),
-            ("🧠 Stress & Mental Well-being", st.session_state.health_score_data["stress"], "#8b5cf6"),
-            ("📱 Screen & Digital Hygiene", st.session_state.health_score_data["screen"], "#ec4899"),
-        ]
-
-        for idx, (p_name, p_val, p_color) in enumerate(pillars):
-            target_col = col_b1 if idx % 2 == 0 else col_b2
-            with target_col:
-                st.markdown(
-                    f"""
-                    <div class="pillar-bar-container">
-                        <div class="pillar-header">
-                            <span>{p_name}</span>
-                            <span style="color: {p_color};">{p_val}%</span>
-                        </div>
-                        <div class="pillar-bar-bg">
-                            <div class="pillar-bar-fill" style="width: {p_val}%; background: {p_color};"></div>
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-
-        if st.button("✨ Ask Gemini for My Personalized Action Plan →", type="primary", use_container_width=True):
-            st.session_state.pending_prompt = (
-                f"I just scored {score}/100 on my SOU HEALTHCARE Awareness Assessment. "
-                f"Here is my pillar breakdown:\n"
-                f"- Sleep: {st.session_state.health_score_data['sleep']}%\n"
-                f"- Nutrition & Hydration: {st.session_state.health_score_data['nutrition']}%\n"
-                f"- Physical Activity: {st.session_state.health_score_data['activity']}%\n"
-                f"- Hygiene & Prevention: {st.session_state.health_score_data['hygiene']}%\n"
-                f"- Stress Management: {st.session_state.health_score_data['stress']}%\n"
-                f"- Screen Habits: {st.session_state.health_score_data['screen']}%\n\n"
-                f"Please provide 3 high-impact, easy-to-implement micro-habits tailored to my lowest scoring pillars to help me improve my overall health awareness and daily wellness."
+        # Breakdown Bars
+        c_bar1, c_bar2 = st.columns(2)
+        with c_bar1:
+            st.markdown(
+                """
+                <div class="pillar-bar-container">
+                    <div class="pillar-header"><span>🏃 Physical Activity & Hydration</span><span>Optimal Range</span></div>
+                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 85%; background: #14b8a6;"></div></div>
+                </div>
+                <div class="pillar-bar-container">
+                    <div class="pillar-header"><span>😴 Sleep Hygiene & Recovery</span><span>Moderate Range</span></div>
+                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 70%; background: #0284c7;"></div></div>
+                </div>
+                """,
+                unsafe_allow_html=True,
             )
+        with c_bar2:
+            st.markdown(
+                """
+                <div class="pillar-bar-container">
+                    <div class="pillar-header"><span>🥗 Wholesome Nutrition</span><span>Strong Habit</span></div>
+                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 80%; background: #10b981;"></div></div>
+                </div>
+                <div class="pillar-bar-container">
+                    <div class="pillar-header"><span>🧠 Mental Stress Resilience</span><span>Developing</span></div>
+                    <div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width: 65%; background: #f59e0b;"></div></div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        # AI Follow-up Consultation Prompt Button
+        if st.button("💬 Discuss My Custom Lifestyle Plan with AI Assistant →", type="primary", use_container_width=True):
+            score_prompt = (
+                f"I just completed the SOU HEALTHCARE Health Literacy & Awareness Diagnostic.\n"
+                f"- Overall Score: {score_val}/100\n"
+                f"- Movement: {res['q1']}\n"
+                f"- Hydration: {res['q2']}\n"
+                f"- Sleep: {res['q3']}\n"
+                f"- Nutrition: {res['q4']}\n"
+                f"- Stress Management: {res['q5']}\n"
+                f"- Health Literacy: {res['q6']}\n\n"
+                f"Please provide an encouraging, personalized 3-step preventive lifestyle roadmap to help me improve my habits."
+            )
+            st.session_state.pending_prompt = score_prompt
             st.session_state.active_tab = "💬 Chat Assistant"
             st.rerun()
 
 # ------------------------------------------------------------------------------
-# TAB B: MYTH BUSTER AI 🧙‍♂️
+# TAB B: MYTH BUSTER AI (FACT-CHECKING POPULAR HEALTH CLAIMS)
 # ------------------------------------------------------------------------------
 elif st.session_state.active_tab == "🧙‍♂️ Myth Buster AI":
-    st.markdown("## 🧙‍♂️ Myth Buster AI: Science vs. Fiction")
-    st.write(
-        "Misinformation can harm health. SOU HEALTHCARE's Myth Buster AI verifies common wellness claims using **peer-reviewed clinical consensus and global health standards**."
-    )
+    st.markdown("## 🧙‍♂️ SOU Healthcare Myth Buster AI")
+    st.caption("Common viral health myths can lead to harmful choices. Select a claim below or type any belief to fact-check with peer-reviewed science.")
 
-    st.markdown("### 🔍 Click to Debunk Popular Health Myths")
-    
     popular_myths = [
         {
-            "myth": "Drinking ice-cold water freezes digestive fats and slows metabolism.",
-            "verdict": "BUSTED",
+            "myth": "Drinking cold water immediately after a meal solidifies dietary fats and causes cancer.",
+            "verdict": "FALSE / BUSTED",
             "tag_class": "myth-tag-busted",
-            "prompt": "Debunk the myth: Does drinking ice-cold water freeze fats in your stomach and slow metabolism?",
+            "prompt": "Scientifically fact-check the myth: Does drinking cold water after eating solidify food oils and cause digestive harm or cancer?",
         },
         {
-            "myth": "Detox teas and 3-day juice cleanses purge built-up toxins from your liver.",
-            "verdict": "BUSTED",
+            "myth": "Detox teas and cleanses are scientifically necessary to remove toxic waste from the human body.",
+            "verdict": "SCIENTIFIC MYTH",
             "tag_class": "myth-tag-busted",
-            "prompt": "Debunk the myth: Do commercial detox teas and juice cleanses actually detoxify liver or kidneys?",
-        },
-        {
-            "myth": "Cracking your knuckle joints causes long-term arthritis.",
-            "verdict": "BUSTED",
-            "tag_class": "myth-tag-busted",
-            "prompt": "Debunk the myth: Does cracking your knuckles lead to arthritis or joint damage?",
+            "prompt": "Debunk the concept of commercial detox cleanses and teas. How do the liver and kidneys naturally handle waste?",
         },
         {
             "myth": "Antibiotics are required to treat severe common colds and flu.",
@@ -1778,9 +1724,9 @@ elif st.session_state.active_tab == "🧙‍♂️ Myth Buster AI":
         with target_col:
             st.markdown(
                 f"""
-                <div class="myth-card">
-                    <span class="myth-tag {item['tag_class']}">{item['verdict']}</span>
-                    <div style="font-weight: 700; font-size: 0.92rem; color: #0f172a; margin-bottom: 0.35rem;">
+                <div class="myth-card" style="padding: 1rem; border-radius: 14px; margin-bottom: 0.8rem;">
+                    <span style="display: inline-block; font-size: 0.72rem; font-weight: 800; padding: 2px 10px; border-radius: 9999px; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); margin-bottom: 0.4rem;">{item['verdict']}</span>
+                    <div style="font-weight: 700; font-size: 0.92rem; margin-bottom: 0.35rem;">
                         "{item['myth']}"
                     </div>
                 </div>
@@ -1926,7 +1872,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
             with st.chat_message("user"):
                 if msg.get("files"):
                     for fname in msg["files"]:
-                        st.markdown(f'<div class="file-badge">📎 {fname}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(13,148,136,0.15); border:1px solid rgba(13,148,136,0.3); border-radius:8px; padding:3px 10px; font-size:0.78rem; font-weight:600; margin-bottom:6px;">📎 {fname}</div>', unsafe_allow_html=True)
                 st.markdown(msg["content"])
         else:
             with st.chat_message("assistant", avatar="🩺"):
@@ -1941,7 +1887,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
                                 st.audio(audio_bytes, format="audio/mp3", autoplay=True)
 
     # ==============================================================================
-    # 11. RESPONSE GENERATION ENGINE (GEMINI STREAMING + TYPING INDICATOR)
+    # 12. RESPONSE GENERATION ENGINE (GEMINI STREAMING + TYPING INDICATOR)
     # ==============================================================================
     def generate_ai_response(prompt_text: str, attached_files=None):
         """Sends prompt and attachments to Gemini API with real-time streaming and typing animation."""
@@ -1963,7 +1909,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
         with st.chat_message("user"):
             if file_names:
                 for fname in file_names:
-                    st.markdown(f'<div class="file-badge">📎 Attached: {fname}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(13,148,136,0.15); border:1px solid rgba(13,148,136,0.3); border-radius:8px; padding:3px 10px; font-size:0.78rem; font-weight:600; margin-bottom:6px;">📎 Attached: {fname}</div>', unsafe_allow_html=True)
             st.markdown(prompt_text)
 
         # Build Gemini message contents
@@ -1995,15 +1941,8 @@ if st.session_state.active_tab == "💬 Chat Assistant":
             typing_placeholder = st.empty()
             typing_placeholder.markdown(
                 """
-                <div class="typing-container">
-                    <div class="typing-text">
-                        <span>🩺 SOU HEALTHCARE is typing</span>
-                        <div class="typing-dots">
-                            <span class="typing-dot"></span>
-                            <span class="typing-dot"></span>
-                            <span class="typing-dot"></span>
-                        </div>
-                    </div>
+                <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; background:rgba(13,148,136,0.15); border:1px solid rgba(13,148,136,0.3); border-radius:20px; font-size:0.84rem; font-weight:700;">
+                    <span>🩺 SOU HEALTHCARE is typing...</span>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -2080,7 +2019,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
             # Interactive follow-up suggestion chips
             st.markdown(
                 """
-                <div style="font-size:0.8rem; font-weight:700; color:#0f766e; margin:0.8rem 0 0.4rem 0;">
+                <div style="font-size:0.8rem; font-weight:700; color:#14b8a6; margin:0.8rem 0 0.4rem 0;">
                     ✨ What would you like to explore next?
                 </div>
                 """,
@@ -2108,7 +2047,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
         generate_ai_response(prompt_to_run)
 
     # ==============================================================================
-    # 12. TASKBAR CHAT INPUT WITH SIDE-POSITIONED MIC BUTTON & AUDIO DOCK
+    # 13. TASKBAR CHAT INPUT WITH SIDE-POSITIONED MIC BUTTON & AUDIO DOCK
     # ==============================================================================
     
     # Clean Compact Voice Dock on the side (expandable / auto-detecting)
@@ -2130,46 +2069,37 @@ if st.session_state.active_tab == "💬 Chat Assistant":
         file_type=["png", "jpg", "jpeg", "webp", "pdf", "txt", "csv"]
     )
 
-    # In-Bar Browser Web Speech Recognition JavaScript Injector (Positioned cleanly on the right side next to Send)
+    # In-Bar Browser Web Speech Recognition JavaScript Injector (Dynamically synced with current active theme)
+    theme_js_val = st.session_state.theme
     components.html(
-        """
+        f"""
         <script>
-        (function() {
+        (function() {{
             const doc = window.parent.document;
+            const currentTheme = "{theme_js_val}";
             
-            // Permanently force Light Mode across all browser engines
-            function enforceLightMode() {
-                try {
-                    if (doc.documentElement) {
-                        doc.documentElement.setAttribute('data-theme', 'light');
-                        doc.documentElement.style.colorScheme = 'light';
-                    }
-                    if (doc.body) {
-                        doc.body.setAttribute('data-theme', 'light');
-                        doc.body.style.colorScheme = 'light';
-                    }
-                    let metaScheme = doc.querySelector('meta[name="color-scheme"]');
-                    if (!metaScheme) {
-                        metaScheme = doc.createElement('meta');
-                        metaScheme.name = 'color-scheme';
-                        metaScheme.content = 'light only';
-                        if (doc.head) doc.head.appendChild(metaScheme);
-                    } else {
-                        metaScheme.content = 'light only';
-                    }
-                } catch (e) {}
-            }
-            enforceLightMode();
-            setInterval(enforceLightMode, 400);
+            function syncThemeAttributes() {{
+                try {{
+                    if (doc.documentElement) {{
+                        doc.documentElement.setAttribute('data-theme', currentTheme);
+                        doc.documentElement.style.colorScheme = currentTheme;
+                    }}
+                    if (doc.body) {{
+                        doc.body.setAttribute('data-theme', currentTheme);
+                        doc.body.style.colorScheme = currentTheme;
+                    }}
+                }} catch (e) {{}}
+            }}
+            syncThemeAttributes();
+            setInterval(syncThemeAttributes, 500);
 
-            function injectVoiceMicToTaskbar() {
+            function injectVoiceMicToTaskbar() {{
                 const chatInput = doc.querySelector('div[data-testid="stChatInput"]');
                 if (!chatInput) return;
                 
-                // Check if already injected
                 let micBtn = doc.getElementById('sou-taskbar-mic-btn');
                 
-                if (!micBtn) {
+                if (!micBtn) {{
                     micBtn = doc.createElement('button');
                     micBtn.id = 'sou-taskbar-mic-btn';
                     micBtn.type = 'button';
@@ -2200,19 +2130,17 @@ if st.session_state.active_tab == "💬 Chat Assistant":
                         z-index: 999;
                     `;
 
-                    // Position cleanly on the right side right before the Send button
                     const submitBtn = chatInput.querySelector('button');
-                    if (submitBtn && submitBtn.parentNode) {
+                    if (submitBtn && submitBtn.parentNode) {{
                         submitBtn.parentNode.insertBefore(micBtn, submitBtn);
-                    } else {
+                    }} else {{
                         const innerContainer = chatInput.querySelector('div') || chatInput;
                         innerContainer.appendChild(micBtn);
-                    }
+                    }}
 
-                    // Setup Speech Recognition
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.parent.SpeechRecognition || window.parent.webkitSpeechRecognition;
                     
-                    if (SpeechRecognition) {
+                    if (SpeechRecognition) {{
                         const recognition = new SpeechRecognition();
                         recognition.continuous = false;
                         recognition.interimResults = true;
@@ -2220,41 +2148,41 @@ if st.session_state.active_tab == "💬 Chat Assistant":
 
                         let isListening = false;
 
-                        micBtn.onclick = function(e) {
+                        micBtn.onclick = function(e) {{
                             e.preventDefault();
                             e.stopPropagation();
-                            if (!isListening) {
-                                try {
+                            if (!isListening) {{
+                                try {{
                                     recognition.start();
-                                } catch(err) {
+                                }} catch(err) {{
                                     console.log(err);
-                                }
-                            } else {
+                                }}
+                            }} else {{
                                 recognition.stop();
-                            }
-                        };
+                            }}
+                        }};
 
-                        recognition.onstart = function() {
+                        recognition.onstart = function() {{
                             isListening = true;
                             micBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
                             micBtn.style.boxShadow = '0 0 16px rgba(239, 68, 68, 0.85)';
                             micBtn.style.transform = 'scale(1.1)';
                             micBtn.title = '🎙️ Listening... Speak your question now!';
-                        };
+                        }};
 
-                        recognition.onresult = function(event) {
+                        recognition.onresult = function(event) {{
                             let transcript = '';
-                            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                            for (let i = event.resultIndex; i < event.results.length; ++i) {{
                                 transcript += event.results[i][0].transcript;
-                            }
+                            }}
                             const textarea = doc.querySelector('div[data-testid="stChatInput"] textarea');
-                            if (textarea) {
+                            if (textarea) {{
                                 textarea.value = transcript;
-                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                            }
-                        };
+                                textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                            }}
+                        }};
 
-                        recognition.onend = function() {
+                        recognition.onend = function() {{
                             isListening = false;
                             micBtn.style.background = 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)';
                             micBtn.style.boxShadow = '0 4px 12px rgba(13, 148, 136, 0.35)';
@@ -2262,24 +2190,24 @@ if st.session_state.active_tab == "💬 Chat Assistant":
                             micBtn.title = '🎙️ Click to Speak (Live Voice Input)';
                             
                             const textarea = doc.querySelector('div[data-testid="stChatInput"] textarea');
-                            if (textarea && textarea.value.trim().length > 0) {
+                            if (textarea && textarea.value.trim().length > 0) {{
                                 textarea.focus();
-                            }
-                        };
+                            }}
+                        }};
 
-                        recognition.onerror = function(event) {
+                        recognition.onerror = function(event) {{
                             isListening = false;
                             micBtn.style.background = 'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)';
                             micBtn.style.boxShadow = '0 4px 12px rgba(13, 148, 136, 0.35)';
                             micBtn.style.transform = 'scale(1.0)';
-                        };
-                    }
-                }
-            }
+                        }};
+                    }}
+                }}
+            }}
 
             injectVoiceMicToTaskbar();
             setInterval(injectVoiceMicToTaskbar, 500);
-        })();
+        }})();
         </script>
         """,
         height=0,
@@ -2306,7 +2234,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
 
     st.markdown(
         """
-        <div style="text-align: center; font-size: 0.74rem; color: #64748b; margin-top: 0.3rem;">
+        <div style="text-align: center; font-size: 0.74rem; color: #94a3b8; margin-top: 0.3rem;">
             ✨ <strong>SOU HEALTHCARE AI</strong> • Powered by Gemini 3.5 Flash • Health Awareness & Prevention • Voice & Multimodal 📎
         </div>
         """,
@@ -2314,7 +2242,7 @@ if st.session_state.active_tab == "💬 Chat Assistant":
     )
 
 # ==============================================================================
-# 13. SUBTLE PERSISTENT HEALTHCARE DISCLAIMER
+# 14. SUBTLE PERSISTENT HEALTHCARE DISCLAIMER
 # ==============================================================================
 st.markdown(
     """
