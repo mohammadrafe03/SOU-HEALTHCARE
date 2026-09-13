@@ -180,16 +180,16 @@ st.markdown(
     }
 
     .sidebar-brand-card {
-        background: linear-gradient(135deg, #042f2e 0%, #0d5c63 45%, #0f766e 80%, #0369a1 100%);
+        background: #ffffff !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 250, 0.95) 50%, rgba(224, 242, 254, 0.95) 100%) !important;
         border-radius: 20px;
         padding: 1.3rem 1.1rem;
-        color: white;
         text-align: center;
-        box-shadow: 0 12px 28px -6px rgba(15, 58, 64, 0.35), 0 0 20px rgba(45, 212, 191, 0.28);
+        box-shadow: 0 10px 25px -4px rgba(13, 148, 136, 0.12), 0 0 15px rgba(56, 189, 248, 0.15) !important;
         margin-bottom: 1rem;
         position: relative;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(13, 148, 136, 0.28) !important;
     }
 
     .sidebar-brand-card::after {
@@ -199,7 +199,7 @@ st.markdown(
         right: -30%;
         width: 150px;
         height: 150px;
-        background: radial-gradient(circle, rgba(96, 165, 250, 0.35) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
         border-radius: 50%;
         pointer-events: none;
     }
@@ -210,8 +210,8 @@ st.markdown(
         margin: 0 auto 0.6rem auto;
         border-radius: 50%;
         object-fit: cover;
-        border: 2.5px solid rgba(255, 255, 255, 0.85);
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28), 0 0 14px rgba(45, 212, 191, 0.5);
+        border: 2.5px solid #0d9488 !important;
+        box-shadow: 0 8px 22px rgba(13, 148, 136, 0.25);
         display: block;
         transition: transform 0.3s ease;
     }
@@ -224,15 +224,16 @@ st.markdown(
         font-size: 1.3rem;
         font-weight: 800;
         letter-spacing: -0.4px;
-        color: #ffffff;
+        color: #042f2e !important;
+        -webkit-text-fill-color: #042f2e !important;
         margin: 0;
         line-height: 1.2;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
     .brand-tag {
         font-size: 0.76rem;
-        color: #ccfbf1;
+        color: #0f766e !important;
+        -webkit-text-fill-color: #0f766e !important;
         font-weight: 600;
         margin-top: 0.25rem;
         letter-spacing: 0.2px;
@@ -242,22 +243,23 @@ st.markdown(
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(255, 255, 255, 0.18);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(13, 148, 136, 0.1) !important;
+        border: 1px solid rgba(13, 148, 136, 0.25) !important;
         padding: 3px 12px;
         border-radius: 9999px;
         font-size: 0.72rem;
         font-weight: 700;
-        color: #a5f3fc;
+        color: #0f766e !important;
+        -webkit-text-fill-color: #0f766e !important;
         margin-top: 0.6rem;
     }
 
     .status-dot {
         width: 7px;
         height: 7px;
-        background-color: #34d399;
+        background-color: #10b981;
         border-radius: 50%;
-        box-shadow: 0 0 10px #34d399;
+        box-shadow: 0 0 10px #10b981;
         display: inline-block;
         animation: pulseDot 2s infinite;
     }
